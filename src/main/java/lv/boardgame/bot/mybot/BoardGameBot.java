@@ -1,6 +1,7 @@
 package lv.boardgame.bot.mybot;
 
 import lv.boardgame.bot.messages.CreateTable;
+import lv.boardgame.bot.messages.ViewTables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,9 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 	@Autowired
 	private CreateTable createTable;
+
+	@Autowired
+	private ViewTables viewTables;
 
 	@Autowired
 	private MenuReplyKeyboard menuReplyKeyboard;
@@ -50,6 +54,9 @@ public class BoardGameBot extends TelegramLongPollingBot {
 					botState = BotState.WAITING_DATE;
 					gameSessionConstructor.setOrganizerUsername(username);
 					sendMessage1 = createTable.askForDate(chatIdString);
+				} else if ("Все столы".equals(receivedText)) {
+					botState = BotState.START;
+					sendMessage1 = viewTables.getAllTables(chatIdString);
 				} else if (botState == BotState.WAITING_PLACE) {
 					gameSessionConstructor.setPlace(receivedText);
 					botState = BotState.WAITING_GAME_NAME;
@@ -66,7 +73,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 					sendMessage1 = SendMessage.builder()
 						.chatId(chatIdString)
 						.parseMode("HTML")
-						.text("<b>Используй кнопки меню внизу</b>")
+						.text("<b>Используйте кнопки меню внизу</b>")
 						.replyMarkup(menuReplyKeyboard)
 						.build();
 				}

@@ -47,7 +47,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 
 	@Override
 	public List<GameSession> findAllGameSessions() {
-		return repository.findAll();
+		return repository.findAll().stream().sorted(Comparator.comparing(GameSession::getDate)).toList();
 	}
 
 	@Override
