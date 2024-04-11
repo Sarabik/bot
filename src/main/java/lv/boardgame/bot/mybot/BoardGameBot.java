@@ -46,6 +46,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 				SendMessage sendMessage1 = null;
 				if ("Создать игровой стол".equals(receivedText)) {
+					gameSessionConstructor.clear();
 					botState = BotState.WAITING_DATE;
 					gameSessionConstructor.setOrganizerUsername(username);
 					sendMessage1 = createTable.askForDate(chatIdString);
@@ -61,7 +62,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 					gameSessionConstructor.setComment(receivedText);
 					botState = BotState.SAVING_TABLE;
 					sendMessage1 = createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession());
-				} else {
+				} else if (botState == BotState.START) {
 					sendMessage1 = SendMessage.builder()
 						.chatId(chatIdString)
 						.parseMode("HTML")
@@ -72,7 +73,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				try {
 					execute(sendMessage1);
 					if (botState == BotState.SAVING_TABLE) {
-						gameSessionConstructor.clear();
 						botState = BotState.START;
 					}
 				} catch (TelegramApiException e) {
@@ -80,14 +80,12 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				}
 			}
 		} else if (update.hasCallbackQuery()) {
-			// Обработка инлайнового запроса
 			CallbackQuery callbackQuery = update.getCallbackQuery();
 			String data = callbackQuery.getData();
 			int messageId = callbackQuery.getMessage().getMessageId();
 			long chatId = callbackQuery.getMessage().getChatId();
 			String chatIdString = String.valueOf(chatId);
 
-			// Ваша логика обработки callbackData
 			SendMessage message1 = SendMessage.builder()
 				.chatId(chatIdString)
 				.parseMode("HTML")
@@ -95,7 +93,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				.build();
 			SendMessage message2 = null;
 
-			/*дата*/
 			if (botState == BotState.WAITING_DATE) {
 				gameSessionConstructor.setDate(data);
 				botState = BotState.WAITING_TIME;
@@ -110,11 +107,11 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				message1.setText("true".equals(data) ? "Вы участвуете в игре сами" : "Вы не участвуете в игре, а только ее проводите");
 				botState = BotState.WAITING_MAX_PLAYER_COUNT;
 				message2 = createTable.askForMaxPlayerCount(chatIdString);
-			}  else if (botState == BotState.WAITING_MAX_PLAYER_COUNT) {
+			} else if (botState == BotState.WAITING_MAX_PLAYER_COUNT) {
 				gameSessionConstructor.setMaxPlayerCount(data);
 				botState = BotState.WAITING_COMMENT;
 				message2 = createTable.askForComment(chatIdString);
-			}else if (botState == BotState.WAITING_COMMENT) {
+			} else if (botState == BotState.WAITING_COMMENT) {
 				gameSessionConstructor.setComment(data);
 				botState = BotState.SAVING_TABLE;
 				message2 = createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession());
@@ -133,7 +130,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			}
 			disableInlineKeyboardButtons(chatId, messageId);
 		}
-
 	}
 
 	@Override
@@ -147,8 +143,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	}
 
 	public void disableInlineKeyboardButtons(Long chatId, Integer messageId) {
-
-		// Устанавливаем пустую клавиатуру в сообщение
 		EditMessageReplyMarkup editMessageReplyMarkup = EditMessageReplyMarkup.builder()
 			.chatId(String.valueOf(chatId))
 			.messageId(messageId)

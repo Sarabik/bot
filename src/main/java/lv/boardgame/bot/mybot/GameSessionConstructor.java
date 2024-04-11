@@ -19,7 +19,15 @@ public class GameSessionConstructor {
 	}
 
 	public void clear() {
-		gameSession = new GameSession();
+		gameSession.setId(null);
+		gameSession.setOrganizerUsername(null);
+		gameSession.setOrganizerPlaying(false);
+		gameSession.setDate(null);
+		gameSession.setPlace(null);
+		gameSession.setGameName(null);
+		gameSession.setMaxPlayerCount(0);
+		gameSession.getPlayers().clear();
+		gameSession.setComment(null);
 	}
 
 	public void setOrganizerUsername(String organizerUsername) {

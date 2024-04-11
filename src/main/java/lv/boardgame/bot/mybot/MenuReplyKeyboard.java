@@ -13,8 +13,11 @@ public class MenuReplyKeyboard extends ReplyKeyboardMarkup {
 	private MenuReplyKeyboard() {
 		this.setOneTimeKeyboard(false);
 		this.setResizeKeyboard(true);
-		this.setKeyboard(List.of(createButtonRow(List.of("Создать игровой стол")),
-			createButtonRow(List.of("Все столы", "Мои столы"))));
+		this.setKeyboard(List.of(
+			createButtonRow(List.of("Создать игровой стол")),
+			createButtonRow(List.of("Все столы", "Мои столы"))
+			)
+		);
 	}
 
 	private KeyboardRow createButtonRow(List<String> buttons) {
