@@ -13,6 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class BoardGameBot extends TelegramLongPollingBot {
 
@@ -38,6 +41,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(final Update update) {
+		List<SendMessage> messageList = new ArrayList<>();
 
 		if(update.hasMessage()){
 			Message receivedMessage = update.getMessage();
@@ -47,49 +51,53 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 			if(receivedMessage.hasText()){
 				String receivedText = receivedMessage.getText();
-
-				SendMessage sendMessage1 = null;
 				if ("Создать игровой стол".equals(receivedText)) {
 					gameSessionConstructor.clear();
 					botState = BotState.WAITING_DATE;
 					gameSessionConstructor.setOrganizerUsername(username);
-					sendMessage1 = createTable.askForDate(chatIdString);
+					messageList.add(createTable.askForDate(chatIdString));
 				} else if ("Все столы".equals(receivedText)) {
 					botState = BotState.START;
-					sendMessage1 = viewTables.getAllTables(chatIdString);
+					messageList.addAll(viewTables.getAllTables(chatIdString, username));
 				} else if (botState == BotState.WAITING_PLACE) {
 					gameSessionConstructor.setPlace(receivedText);
 					botState = BotState.WAITING_GAME_NAME;
-					sendMessage1 = createTable.askForGameName(chatIdString);
+					messageList.add(createTable.askForGameName(chatIdString));
 				} else if (botState == BotState.WAITING_GAME_NAME) {
 					gameSessionConstructor.setGameName(receivedText);
 					botState = BotState.WAITING_IF_ORGANIZER_PLAYING;
-					sendMessage1 = createTable.askForIfOrganizerPlaying(chatIdString);
+					messageList.add(createTable.askForIfOrganizerPlaying(chatIdString));
 				} else if (botState == BotState.WAITING_COMMENT) {
 					gameSessionConstructor.setComment(receivedText);
 					botState = BotState.SAVING_TABLE;
-					sendMessage1 = createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession());
+					messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession()));
 				} else if (botState == BotState.START) {
-					sendMessage1 = SendMessage.builder()
+					SendMessage sendMessage = SendMessage.builder()
 						.chatId(chatIdString)
 						.parseMode("HTML")
 						.text("<b>Используйте кнопки меню внизу</b>")
 						.replyMarkup(menuReplyKeyboard)
 						.build();
+					messageList.add(sendMessage);
 				}
-				try {
-					execute(sendMessage1);
-					if (botState == BotState.SAVING_TABLE) {
-						botState = BotState.START;
+				messageList.forEach(s -> {
+					try {
+						execute(s);
+					} catch (TelegramApiException e) {
+						throw new RuntimeException(e);
 					}
-				} catch (TelegramApiException e) {
-					throw new RuntimeException(e);
+				});
+				if (botState == BotState.SAVING_TABLE) {
+					botState = BotState.START;
 				}
 			}
 		} else if (update.hasCallbackQuery()) {
+
 			CallbackQuery callbackQuery = update.getCallbackQuery();
 			String data = callbackQuery.getData();
+			String username = callbackQuery.getFrom().getUserName();
 			int messageId = callbackQuery.getMessage().getMessageId();
+			String messageText = callbackQuery.getMessage().getText();
 			long chatId = callbackQuery.getMessage().getChatId();
 			String chatIdString = String.valueOf(chatId);
 
@@ -98,42 +106,52 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				.parseMode("HTML")
 				.text(data)
 				.build();
-			SendMessage message2 = null;
+			messageList.add(message1);
 
 			if (botState == BotState.WAITING_DATE) {
 				gameSessionConstructor.setDate(data);
 				botState = BotState.WAITING_TIME;
-				message2 = createTable.askForTime(chatIdString);
+				messageList.add(createTable.askForTime(chatIdString));
 			} else if (botState == BotState.WAITING_TIME) {
 				gameSessionConstructor.setTime(data);
 				gameSessionConstructor.setDateTime();
 				botState = BotState.WAITING_PLACE;
-				message2 = createTable.askForPlace(chatIdString);
+				messageList.add(createTable.askForPlace(chatIdString));
 			} else if (botState == BotState.WAITING_IF_ORGANIZER_PLAYING) {
 				gameSessionConstructor.setIfOrganizerPlaying(data);
 				message1.setText("true".equals(data) ? "Вы участвуете в игре сами" : "Вы не участвуете в игре, а только ее проводите");
 				botState = BotState.WAITING_MAX_PLAYER_COUNT;
-				message2 = createTable.askForMaxPlayerCount(chatIdString);
+				messageList.add(createTable.askForMaxPlayerCount(chatIdString));
 			} else if (botState == BotState.WAITING_MAX_PLAYER_COUNT) {
 				gameSessionConstructor.setMaxPlayerCount(data);
 				botState = BotState.WAITING_COMMENT;
-				message2 = createTable.askForComment(chatIdString);
+				messageList.add(createTable.askForComment(chatIdString));
 			} else if (botState == BotState.WAITING_COMMENT) {
 				gameSessionConstructor.setComment(data);
 				botState = BotState.SAVING_TABLE;
-				message2 = createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession());
+				messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession()));
+			} else if ("Игровая встреча отменена".equals(data)) {
+				String date = callbackQuery.getMessage().getEntities().get(1).getText();
+				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
+				viewTables.deleteTable(date, organizer);
+			} else if ("Вы присоединились к столу".equals(data)) {
+				String date = callbackQuery.getMessage().getEntities().get(1).getText();
+				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
+				viewTables.addPlayerToTable(date, organizer, username);
+			} else if ("Запись отменена".equals(data)) {
+				String date = callbackQuery.getMessage().getEntities().get(1).getText();
+				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
+				viewTables.leaveGameTable(date, organizer, username);
 			}
-			try {
-				execute(message1);
-				if(message2 != null) {
-					execute(message2);
+			messageList.forEach(s -> {
+				try {
+					execute(s);
+				} catch (TelegramApiException e) {
+					throw new RuntimeException(e);
 				}
-				if (botState == BotState.SAVING_TABLE) {
-					gameSessionConstructor.clear();
-					botState = BotState.START;
-				}
-			} catch (TelegramApiException e) {
-				e.printStackTrace();
+			});
+			if (botState == BotState.SAVING_TABLE) {
+				botState = BotState.START;
 			}
 			disableInlineKeyboardButtons(chatId, messageId);
 		}

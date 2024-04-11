@@ -6,6 +6,7 @@ import lv.boardgame.bot.repository.GameSessionRepository;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -53,5 +54,13 @@ public class GameSessionServiceImpl implements GameSessionService {
 	@Override
 	public void updateGameSession(final GameSession gameSession) {
 		repository.save(gameSession);
+	}
+
+	@Override
+	public GameSession findGameSessionByDateAndOrganizer(LocalDateTime date, String organizer) {
+		Optional<GameSession> opt = findAllGameSessions().stream()
+			.filter(s -> s.getDate().equals(date) && s.getOrganizerUsername().equals(organizer))
+			.findFirst();
+		return opt.orElse(null);
 	}
 }

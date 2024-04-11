@@ -8,7 +8,7 @@ import java.util.StringJoiner;
 public class ConvertGameSessionToString {
 	public static String getString(GameSession gmSession) {
 		StringJoiner joiner = new StringJoiner(System.lineSeparator());
-		String date = gmSession.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+		String date = gmSession.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 		joiner.add("<b>Когда:  </b><i>" + date + "</i>");
 		joiner.add("<b>Где:  </b><i>" + gmSession.getPlace() + "</i>");
 		joiner.add("<b>Игра / игры:  </b><i>" + gmSession.getGameName() + "</i>");
