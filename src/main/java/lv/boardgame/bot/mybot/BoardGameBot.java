@@ -19,8 +19,6 @@ import java.util.List;
 @Component
 public class BoardGameBot extends TelegramLongPollingBot {
 
-	private BotState botState = BotState.START;
-
 	@Autowired
 	private GameSessionConstructor gameSessionConstructor;
 
@@ -52,26 +50,21 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			if(receivedMessage.hasText()){
 				String receivedText = receivedMessage.getText();
 				if ("Создать игровой стол".equals(receivedText)) {
-					gameSessionConstructor.clear();
-					botState = BotState.WAITING_DATE;
-					gameSessionConstructor.setOrganizerUsername(username);
+					gameSessionConstructor.start(username);
 					messageList.add(createTable.askForDate(chatIdString));
 				} else if ("Все столы".equals(receivedText)) {
-					botState = BotState.START;
+					gameSessionConstructor.clear(username);
 					messageList.addAll(viewTables.getAllTables(chatIdString, username));
-				} else if (botState == BotState.WAITING_PLACE) {
-					gameSessionConstructor.setPlace(receivedText);
-					botState = BotState.WAITING_GAME_NAME;
+				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_PLACE) {
+					gameSessionConstructor.setPlace(username,receivedText);
 					messageList.add(createTable.askForGameName(chatIdString));
-				} else if (botState == BotState.WAITING_GAME_NAME) {
-					gameSessionConstructor.setGameName(receivedText);
-					botState = BotState.WAITING_IF_ORGANIZER_PLAYING;
+				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_GAME_NAME) {
+					gameSessionConstructor.setGameName(username, receivedText);
 					messageList.add(createTable.askForIfOrganizerPlaying(chatIdString));
-				} else if (botState == BotState.WAITING_COMMENT) {
-					gameSessionConstructor.setComment(receivedText);
-					botState = BotState.SAVING_TABLE;
-					messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession()));
-				} else if (botState == BotState.START) {
+				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_COMMENT) {
+					gameSessionConstructor.setComment(username, receivedText);
+					messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession(username)));
+				} else {
 					SendMessage sendMessage = SendMessage.builder()
 						.chatId(chatIdString)
 						.parseMode("HTML")
@@ -87,8 +80,8 @@ public class BoardGameBot extends TelegramLongPollingBot {
 						throw new RuntimeException(e);
 					}
 				});
-				if (botState == BotState.SAVING_TABLE) {
-					botState = BotState.START;
+				if (gameSessionConstructor.getBotState(username) == BotState.SAVING_TABLE) {
+					gameSessionConstructor.clear(username);
 				}
 			}
 		} else if (update.hasCallbackQuery()) {
@@ -108,28 +101,22 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				.build();
 			messageList.add(message1);
 
-			if (botState == BotState.WAITING_DATE) {
-				gameSessionConstructor.setDate(data);
-				botState = BotState.WAITING_TIME;
+			if (gameSessionConstructor.getBotState(username) == BotState.WAITING_DATE) {
+				gameSessionConstructor.setDate(username, data);
 				messageList.add(createTable.askForTime(chatIdString));
-			} else if (botState == BotState.WAITING_TIME) {
-				gameSessionConstructor.setTime(data);
-				gameSessionConstructor.setDateTime();
-				botState = BotState.WAITING_PLACE;
+			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_TIME) {
+				gameSessionConstructor.setTime(username, data);
 				messageList.add(createTable.askForPlace(chatIdString));
-			} else if (botState == BotState.WAITING_IF_ORGANIZER_PLAYING) {
-				gameSessionConstructor.setIfOrganizerPlaying(data);
+			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_IF_ORGANIZER_PLAYING) {
+				gameSessionConstructor.setIfOrganizerPlaying(username, data);
 				message1.setText("true".equals(data) ? "Вы участвуете в игре сами" : "Вы не участвуете в игре, а только ее проводите");
-				botState = BotState.WAITING_MAX_PLAYER_COUNT;
 				messageList.add(createTable.askForMaxPlayerCount(chatIdString));
-			} else if (botState == BotState.WAITING_MAX_PLAYER_COUNT) {
-				gameSessionConstructor.setMaxPlayerCount(data);
-				botState = BotState.WAITING_COMMENT;
+			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_MAX_PLAYER_COUNT) {
+				gameSessionConstructor.setMaxPlayerCount(username, data);
 				messageList.add(createTable.askForComment(chatIdString));
-			} else if (botState == BotState.WAITING_COMMENT) {
-				gameSessionConstructor.setComment(data);
-				botState = BotState.SAVING_TABLE;
-				messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession()));
+			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_COMMENT) {
+				gameSessionConstructor.setComment(username, data);
+				messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession(username)));
 			} else if ("Игровая встреча отменена".equals(data)) {
 				String date = callbackQuery.getMessage().getEntities().get(1).getText();
 				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
@@ -150,8 +137,8 @@ public class BoardGameBot extends TelegramLongPollingBot {
 					throw new RuntimeException(e);
 				}
 			});
-			if (botState == BotState.SAVING_TABLE) {
-				botState = BotState.START;
+			if (gameSessionConstructor.getBotState(username) == BotState.SAVING_TABLE) {
+				gameSessionConstructor.clear(username);
 			}
 			disableInlineKeyboardButtons(chatId, messageId);
 		}
