@@ -49,10 +49,10 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 			if(receivedMessage.hasText()){
 				String receivedText = receivedMessage.getText();
-				if ("Создать игровой стол".equals(receivedText)) {
+				if ("Организовать встречу".equals(receivedText)) {
 					gameSessionConstructor.start(username);
 					messageList.add(createTable.askForDate(chatIdString));
-				} else if ("Все столы".equals(receivedText)) {
+				} else if ("Все игровые встречи".equals(receivedText)) {
 					gameSessionConstructor.clear(username);
 					messageList.addAll(viewTables.getAllTables(chatIdString, username));
 				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_PLACE) {
@@ -129,6 +129,14 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				String date = callbackQuery.getMessage().getEntities().get(1).getText();
 				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
 				viewTables.leaveGameTable(date, organizer, username);
+			} else {
+				SendMessage sendMessage = SendMessage.builder()
+					.chatId(chatIdString)
+					.parseMode("HTML")
+					.text("<b>Используйте кнопки меню внизу</b>")
+					.replyMarkup(menuReplyKeyboard)
+					.build();
+				messageList.add(sendMessage);
 			}
 			messageList.forEach(s -> {
 				try {

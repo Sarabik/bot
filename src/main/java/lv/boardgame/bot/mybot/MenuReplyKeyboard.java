@@ -14,8 +14,9 @@ public class MenuReplyKeyboard extends ReplyKeyboardMarkup {
 		this.setOneTimeKeyboard(false);
 		this.setResizeKeyboard(true);
 		this.setKeyboard(List.of(
-			createButtonRow(List.of("Создать игровой стол")),
-			createButtonRow(List.of("Все столы", "Мои столы"))
+			createButtonRow(List.of("Все игровые встречи")),
+			createButtonRow(List.of("Присоединиться", "Отписаться")),
+			createButtonRow(List.of("Организовать встречу", "Отменить встречу"))
 			)
 		);
 	}
