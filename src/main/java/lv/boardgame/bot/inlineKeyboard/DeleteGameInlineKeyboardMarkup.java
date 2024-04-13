@@ -16,7 +16,7 @@ public class DeleteGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 	private static List<List<InlineKeyboardButton>> ifPlaying() {
 		InlineKeyboardButton buttonYes = InlineKeyboardButton.builder()
 			.text("Отменить игровую встречу")
-			.callbackData("Игровая встреча отменена")
+			.callbackData("ИГРОВАЯ ВСТРЕЧА ОТМЕНЕНА:")
 			.build();
 		return List.of(List.of(buttonYes));
 	}

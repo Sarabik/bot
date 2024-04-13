@@ -52,8 +52,8 @@ public class GameSessionServiceImpl implements GameSessionService {
 	}
 
 	@Override
-	public void updateGameSession(final GameSession gameSession) {
-		repository.save(gameSession);
+	public GameSession updateGameSession(final GameSession gameSession) {
+		return repository.save(gameSession);
 	}
 
 	@Override

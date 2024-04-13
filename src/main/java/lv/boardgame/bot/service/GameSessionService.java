@@ -20,7 +20,7 @@ public interface GameSessionService {
 
 	GameSession findGameSessionByDateAndOrganizer(LocalDateTime date, String organizer);
 
-	void updateGameSession(final GameSession gameSession);
+	GameSession updateGameSession(final GameSession gameSession);
 
 	void deleteOutdatedGameSessions();
 

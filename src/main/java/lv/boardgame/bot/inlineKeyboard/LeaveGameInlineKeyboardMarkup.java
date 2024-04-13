@@ -10,14 +10,14 @@ import java.util.List;
 public class LeaveGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
 	public LeaveGameInlineKeyboardMarkup() {
-		this.setKeyboard(ifPlaying());
+		this.setKeyboard(keyboard());
 	}
 
-	private static List<List<InlineKeyboardButton>> ifPlaying() {
-		InlineKeyboardButton buttonYes = InlineKeyboardButton.builder()
-			.text("Отменить запись")
-			.callbackData("Запись отменена")
+	private static List<List<InlineKeyboardButton>> keyboard() {
+		InlineKeyboardButton button = InlineKeyboardButton.builder()
+			.text("Отписаться")
+			.callbackData("ВЫ ОТПИСАЛИСЬ ОТ ИГРОВОЙ ВСТРЕЧИ:")
 			.build();
-		return List.of(List.of(buttonYes));
+		return List.of(List.of(button));
 	}
 }

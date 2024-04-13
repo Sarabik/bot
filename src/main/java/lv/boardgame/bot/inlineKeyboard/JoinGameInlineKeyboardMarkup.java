@@ -15,8 +15,8 @@ public class JoinGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
 	private static List<List<InlineKeyboardButton>> ifPlaying() {
 		InlineKeyboardButton buttonYes = InlineKeyboardButton.builder()
-			.text("Присоединиться к столу")
-			.callbackData("Вы присоединились к столу")
+			.text("Присоединиться к встрече")
+			.callbackData("ВЫ ПРИСОЕДИНИЛИСЬ К ВСТРЕЧЕ:")
 			.build();
 		return List.of(List.of(buttonYes));
 	}
