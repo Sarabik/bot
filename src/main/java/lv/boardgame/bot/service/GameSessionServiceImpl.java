@@ -57,10 +57,24 @@ public class GameSessionServiceImpl implements GameSessionService {
 	}
 
 	@Override
+	public void deleteOutdatedGameSessions() {
+		List<GameSession> list = findAllGameSessions();
+		LocalDateTime date = LocalDateTime.now();
+		date = date.minusHours(1);
+		for (GameSession gs : list) {
+			if (gs.getDate().isBefore(date)) {
+				repository.deleteById(gs.getId());
+			}
+		}
+	}
+
+	@Override
 	public GameSession findGameSessionByDateAndOrganizer(LocalDateTime date, String organizer) {
 		Optional<GameSession> opt = findAllGameSessions().stream()
 			.filter(s -> s.getDate().equals(date) && s.getOrganizerUsername().equals(organizer))
 			.findFirst();
 		return opt.orElse(null);
 	}
+
+
 }

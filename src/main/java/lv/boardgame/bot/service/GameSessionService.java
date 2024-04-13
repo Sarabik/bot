@@ -22,4 +22,6 @@ public interface GameSessionService {
 
 	void updateGameSession(final GameSession gameSession);
 
+	void deleteOutdatedGameSessions();
+
 }

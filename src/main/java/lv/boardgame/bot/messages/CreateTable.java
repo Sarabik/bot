@@ -38,6 +38,14 @@ public class CreateTable {
 			.build();
 	}
 
+	public SendMessage createTable(final String chatIdString) {
+		return SendMessage.builder()
+			.chatId(chatIdString)
+			.parseMode("HTML")
+			.text("Пожалуйста, последовательно дайте ответы на все вопросы. Когда запись о игровой встрече будет создана, вы увидите сообщение об этом.")
+			.build();
+	}
+
 	public SendMessage askForTime(final String chatIdString) {
 		return SendMessage.builder()
 			.chatId(chatIdString)
@@ -95,7 +103,7 @@ public class CreateTable {
 		return SendMessage.builder()
 			.chatId(chatIdString)
 			.parseMode("HTML")
-			.text("<b>ГОТОВО! СТОЛ СОЗДАН!</b>" + System.lineSeparator() + getString(gmSession))
+			.text("<b>ИГРОВАЯ ВСТРЕЧА СОЗДАНА!</b>" + System.lineSeparator() + getString(gmSession))
 			.build();
 	}
 }

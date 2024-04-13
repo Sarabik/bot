@@ -23,6 +23,10 @@ public class GameSessionConstructor {
 		return constructorMap.get(username);
 	}
 
+	public boolean ifContentsUsername(String username) {
+		return constructorMap.containsKey(username);
+	}
+
 	public BotState getBotState(String username) {
 		if (constructorMap.containsKey(username)) {
 			return getGameSessionByUsername(username).getBotState();
