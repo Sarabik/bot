@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class AllGameSessions implements Command{
+public class AllGameSessions implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 

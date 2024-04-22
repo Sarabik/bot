@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class JoinGameSession implements Command {
+public class JoinGameSession implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 

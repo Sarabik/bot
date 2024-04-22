@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class WaitingDate implements Command {
+public class WaitingDate implements MessageCommand {
 
 	private CreateTable createTable;
 

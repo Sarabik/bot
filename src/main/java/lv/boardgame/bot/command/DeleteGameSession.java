@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class DeleteGameSession implements Command {
+public class DeleteGameSession implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 

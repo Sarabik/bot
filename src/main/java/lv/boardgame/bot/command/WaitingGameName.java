@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class WaitingGameName implements Command {
+public class WaitingGameName implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 

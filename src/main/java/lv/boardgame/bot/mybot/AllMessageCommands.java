@@ -1,7 +1,7 @@
 package lv.boardgame.bot.mybot;
 
 import lv.boardgame.bot.command.AllGameSessions;
-import lv.boardgame.bot.command.Command;
+import lv.boardgame.bot.command.MessageCommand;
 import lv.boardgame.bot.command.DeleteGameSession;
 import lv.boardgame.bot.command.JoinGameSession;
 import lv.boardgame.bot.command.LeaveGameSession;
@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class AllCommands {
+public class AllMessageCommands {
 
-	private final Map<String, Command> commands;
+	private final Map<String, MessageCommand> commands;
 
-	private AllCommands(
+	private AllMessageCommands(
 		final OrganizeGameSession organizeGameSession,
 		final AllGameSessions allGameSessions,
 		final JoinGameSession joinGameSession,
@@ -43,7 +43,7 @@ public class AllCommands {
 		commands.put("WAITING_COMMENT", waitingComment);
 	}
 
-	public Command getCommand(String key) {
+	public MessageCommand getCommand(String key) {
 		return commands.get(key);
 	}
 

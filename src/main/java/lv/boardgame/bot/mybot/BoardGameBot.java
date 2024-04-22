@@ -1,5 +1,6 @@
 package lv.boardgame.bot.mybot;
 
+import lv.boardgame.bot.command.CallbackQueryCommand;
 import lv.boardgame.bot.messages.CreateTable;
 import lv.boardgame.bot.messages.EditTable;
 import lv.boardgame.bot.messages.MenuMessage;
@@ -37,7 +38,10 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	private MenuReplyKeyboard menuReplyKeyboard;
 
 	@Autowired
-	private AllCommands allCommands;
+	private AllMessageCommands allMessageCommands;
+
+	@Autowired
+	private AllCallbackQueryCommands allCallbackQueryCommands;
 
 	@Value("${telegram.bot.username}")
 	private String botUsername;
@@ -58,10 +62,12 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			if(receivedMessage.hasText()){
 				String receivedText = receivedMessage.getText();
 
-				if (allCommands.ifContainsKey(receivedText)) {
-					messageList = allCommands.getCommand(receivedText).execute(chatIdString, username, receivedText);
-				} else if (botState != null && allCommands.ifContainsKey(botState.toString())) {
-					messageList = allCommands.getCommand(botState.toString()).execute(chatIdString, username, receivedText);
+				if (allMessageCommands.ifContainsKey(receivedText)) {
+					messageList = allMessageCommands
+						.getCommand(receivedText).execute(chatIdString, username, receivedText);
+				} else if (botState != null && allMessageCommands.ifContainsKey(botState.toString())) {
+					messageList = allMessageCommands
+						.getCommand(botState.toString()).execute(chatIdString, username, receivedText);
 				} else {
 					messageList.add(menuMessage.getMenuMessage(chatIdString));
 				}
@@ -72,9 +78,10 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			String data = callbackQuery.getData();
 			String username = callbackQuery.getFrom().getUserName();
 			int messageId = callbackQuery.getMessage().getMessageId();
-			String messageText = callbackQuery.getMessage().getText();
+			Message callbackQueryMessage = callbackQuery.getMessage();
 			long chatId = callbackQuery.getMessage().getChatId();
 			String chatIdString = String.valueOf(chatId);
+			BotState botState = gameSessionConstructor.getBotState(username);
 
 			SendMessage message1 = SendMessage.builder()
 				.chatId(chatIdString)
@@ -82,6 +89,26 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				.text(data)
 				.build();
 			messageList.add(message1);
+
+			/*SendMessage message2;
+			if (botState != null && allCallbackQueryCommands.ifContainsKey(botState.toString())) {
+				message2 = allCallbackQueryCommands.getCommand(botState.toString())
+					.execute(chatIdString, username, data, callbackQueryMessage);
+			} else if (allCallbackQueryCommands.ifContainsKey(data)) {
+				message2 = allCallbackQueryCommands.getCommand(data)
+					.execute(chatIdString, username, data, callbackQueryMessage);
+			} else {
+				message2 = SendMessage.builder()
+					.chatId(chatIdString)
+					.parseMode("HTML")
+					.text("<b>Используйте кнопки меню внизу</b>")
+					.replyMarkup(menuReplyKeyboard)
+					.build();
+			}
+			messageList.add(message2);
+			messageList.forEach(this::safeExecute);
+			disableInlineKeyboardButtons(chatId, messageId);*/
+
 
 			if (gameSessionConstructor.getBotState(username) == BotState.WAITING_DATE && "Выберите дату".equals(data)) {
 				messageList.add(createTable.askForDate(chatIdString));
@@ -103,18 +130,18 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession(username)));
 				gameSessionConstructor.clear(username);
 			} else if ("ИГРОВАЯ ВСТРЕЧА ОТМЕНЕНА:".equals(data)) {
-				String date = callbackQuery.getMessage().getEntities().get(1).getText();
-				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
+				String date = callbackQueryMessage.getEntities().get(1).getText();
+				String organizer = callbackQueryMessage.getEntities().get(8).getText().substring(1);
 				GameSession session = editTable.deleteTable(date, organizer);
 				messageList.add(editTable.getEditedSession(chatIdString, session));
 			} else if ("ВЫ ПРИСОЕДИНИЛИСЬ К ВСТРЕЧЕ:".equals(data)) {
-				String date = callbackQuery.getMessage().getEntities().get(1).getText();
-				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
+				String date = callbackQueryMessage.getEntities().get(1).getText();
+				String organizer = callbackQueryMessage.getEntities().get(8).getText().substring(1);
 				GameSession session = editTable.addPlayerToTable(date, organizer, username);
 				messageList.add(editTable.getEditedSession(chatIdString, session));
 			} else if ("ВЫ ОТПИСАЛИСЬ ОТ ИГРОВОЙ ВСТРЕЧИ:".equals(data)) {
-				String date = callbackQuery.getMessage().getEntities().get(1).getText();
-				String organizer = callbackQuery.getMessage().getEntities().get(8).getText().substring(1);
+				String date = callbackQueryMessage.getEntities().get(1).getText();
+				String organizer = callbackQueryMessage.getEntities().get(8).getText().substring(1);
 				GameSession session = editTable.leaveGameTable(date, organizer, username);
 				messageList.add(editTable.getEditedSession(chatIdString, session));
 			} else {
