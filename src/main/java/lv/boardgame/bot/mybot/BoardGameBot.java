@@ -2,6 +2,7 @@ package lv.boardgame.bot.mybot;
 
 import lv.boardgame.bot.messages.CreateTable;
 import lv.boardgame.bot.messages.EditTable;
+import lv.boardgame.bot.messages.MenuMessage;
 import lv.boardgame.bot.model.GameSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,10 +28,16 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	private CreateTable createTable;
 
 	@Autowired
+	private MenuMessage menuMessage;
+
+	@Autowired
 	private EditTable editTable;
 
 	@Autowired
 	private MenuReplyKeyboard menuReplyKeyboard;
+
+	@Autowired
+	private AllCommands allCommands;
 
 	@Value("${telegram.bot.username}")
 	private String botUsername;
@@ -46,54 +53,19 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			Message receivedMessage = update.getMessage();
 			String username = receivedMessage.getFrom().getUserName();
 			String chatIdString = String.valueOf(receivedMessage.getChatId());
+			BotState botState = gameSessionConstructor.getBotState(username);
 
 			if(receivedMessage.hasText()){
 				String receivedText = receivedMessage.getText();
-				if ("Организовать встречу".equals(receivedText)) {
-					messageList.add(createTable.createTable(chatIdString));
-					gameSessionConstructor.start(username);
-					messageList.add(createTable.askForDate(chatIdString));
-				} else if ("Все игровые встречи".equals(receivedText)) {
-					gameSessionConstructor.clear(username);
-					messageList.add(editTable.getAllTables(chatIdString));
-					messageList.add(getMenuMessage(chatIdString));
-				} else if ("Присоединиться".equals(receivedText)) {
-					gameSessionConstructor.clear(username);
-					String st = "<b>Укажите к какой игровой встрече вы хотели бы присоединиться</b>";
-					messageList.add(editTable.getCustomMessage(chatIdString, st));
-					messageList.addAll(editTable.getAllTablesToJoin(chatIdString, username));
-				} else if ("Отписаться".equals(receivedText)) {
-					gameSessionConstructor.clear(username);
-					String st = "<b>Укажите от участия в какой игровой встрече вы хотели бы отписаться</b>";
-					messageList.add(editTable.getCustomMessage(chatIdString, st));
-					messageList.addAll(editTable.getAllTablesToLeave(chatIdString, username));
-				} else if ("Отменить встречу".equals(receivedText)) {
-					gameSessionConstructor.clear(username);
-					String st = "<b>Укажите какую организованную вами игровую встречу вы хотели бы отменить</b>";
-					messageList.add(editTable.getCustomMessage(chatIdString, st));
-					messageList.addAll(editTable.getAllTablesToDelete(chatIdString, username));
-				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_DATE) {
-					messageList.add(createTable.askForDate(chatIdString));
-				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_PLACE) {
-					gameSessionConstructor.setPlace(username,receivedText);
-					messageList.add(createTable.askForGameName(chatIdString));
-				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_GAME_NAME) {
-					gameSessionConstructor.setGameName(username, receivedText);
-					messageList.add(createTable.askForIfOrganizerPlaying(chatIdString));
-				} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_COMMENT) {
-					gameSessionConstructor.setComment(username, receivedText);
-					messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession(username)));
-					gameSessionConstructor.clear(username);
+
+				if (allCommands.ifContainsKey(receivedText)) {
+					messageList = allCommands.getCommand(receivedText).execute(chatIdString, username, receivedText);
+				} else if (botState != null && allCommands.ifContainsKey(botState.toString())) {
+					messageList = allCommands.getCommand(botState.toString()).execute(chatIdString, username, receivedText);
 				} else {
-					messageList.add(getMenuMessage(chatIdString));
+					messageList.add(menuMessage.getMenuMessage(chatIdString));
 				}
-				messageList.forEach(s -> {
-					try {
-						execute(s);
-					} catch (TelegramApiException e) {
-						throw new RuntimeException(e);
-					}
-				});
+				messageList.forEach(this::safeExecute);
 			}
 		} else if (update.hasCallbackQuery()) {
 			CallbackQuery callbackQuery = update.getCallbackQuery();
@@ -154,13 +126,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 					.build();
 				messageList.add(sendMessage);
 			}
-			messageList.forEach(s -> {
-				try {
-					execute(s);
-				} catch (TelegramApiException e) {
-					throw new RuntimeException(e);
-				}
-			});
+			messageList.forEach(this::safeExecute);
 			disableInlineKeyboardButtons(chatId, messageId);
 		}
 	}
@@ -188,15 +154,11 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		}
 	}
 
-	private SendMessage getMenuMessage(String chatIdString) {
-		return SendMessage.builder()
-			.chatId(chatIdString)
-			.parseMode("HTML")
-			.text("<b>Для того чтобы</b>" + System.lineSeparator() +
-				"  <i>1) присоединиться или отписаться от игровой встречи</i>" + System.lineSeparator() +
-				"  <i>2) создать или отменить свою игровую встречу</i>" + System.lineSeparator() +
-				"<b>используйте кнопки меню внизу</b>")
-			.replyMarkup(menuReplyKeyboard)
-			.build();
+	private void safeExecute(SendMessage message) {
+		try {
+			execute(message);
+		} catch (TelegramApiException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
