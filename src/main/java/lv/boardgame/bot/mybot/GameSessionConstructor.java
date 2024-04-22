@@ -19,6 +19,10 @@ public class GameSessionConstructor {
 		return getGameSessionByUsername(username).getGameSession();
 	}
 
+	public Map<String, GameSessionBotStatePair> getMap() {
+		return constructorMap;
+	}
+
 	private GameSessionBotStatePair getGameSessionByUsername(String username) {
 		return constructorMap.get(username);
 	}
@@ -84,7 +88,6 @@ public class GameSessionConstructor {
 	public void setComment(String username, String comment) {
 		if (!"Нет комментариев".equals(comment)) {
 			GameSessionBotStatePair pair = getGameSessionByUsername(username);
-			pair.setBotState(BotState.SAVING_TABLE);
 			pair.getGameSession().setComment(comment);
 		}
 	}

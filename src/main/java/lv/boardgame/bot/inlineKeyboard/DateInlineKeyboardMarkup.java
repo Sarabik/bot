@@ -25,7 +25,7 @@ public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		List<InlineKeyboardButton> daysButtons = days.stream()
 			.map(s -> InlineKeyboardButton.builder()
 				.text(s)
-				.callbackData("ignore")
+				.callbackData("Выберите дату")
 				.build())
 			.toList();
 		calendar.add(daysButtons);
@@ -36,7 +36,7 @@ public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		for (int i = 1; i < dayOfWeek; i++) {
 			firstWeek.add(InlineKeyboardButton.builder()
 				.text("-")
-				.callbackData("ignore")
+				.callbackData("Выберите дату")
 				.build());
 		}
 		for (int i = dayOfWeek; i <= 7; i++) {
