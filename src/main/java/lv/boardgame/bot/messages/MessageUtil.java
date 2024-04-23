@@ -4,10 +4,11 @@ import lv.boardgame.bot.model.GameSession;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+
+import static lv.boardgame.bot.TextFinals.DATE_TIME_FORMATTER;
 
 public class MessageUtil {
 
@@ -39,7 +40,7 @@ public class MessageUtil {
 
 	public static String convertGameSessionToString(GameSession gmSession) {
 		StringJoiner joiner = new StringJoiner(System.lineSeparator());
-		String date = gmSession.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+		String date = gmSession.getDate().format(DATE_TIME_FORMATTER);
 		joiner.add("<b>Когда:  </b><i>" + date + "</i>");
 		joiner.add("<b>Где:  </b><i>" + gmSession.getPlace() + "</i>");
 		joiner.add("<b>Игра / игры:  </b><i>" + gmSession.getGameName() + "</i>");

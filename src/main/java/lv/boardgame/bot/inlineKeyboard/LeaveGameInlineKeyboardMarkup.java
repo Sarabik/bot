@@ -6,6 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+import static lv.boardgame.bot.TextFinals.LEAVE_SESSION;
+import static lv.boardgame.bot.TextFinals.SESSION_LEAVED;
+
 @Component
 public class LeaveGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
@@ -15,8 +18,8 @@ public class LeaveGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
 	private static List<List<InlineKeyboardButton>> keyboard() {
 		InlineKeyboardButton button = InlineKeyboardButton.builder()
-			.text("Отписаться")
-			.callbackData("ВЫ ОТПИСАЛИСЬ ОТ ИГРОВОЙ ВСТРЕЧИ:")
+			.text(LEAVE_SESSION)
+			.callbackData(SESSION_LEAVED)
 			.build();
 		return List.of(List.of(button));
 	}

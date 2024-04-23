@@ -10,10 +10,13 @@ import lv.boardgame.bot.commands.callbackQueryCommand.WaitingDateCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingIfOrganizerPlayingCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingMaxPlayerCountCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingTimeCallback;
+import lv.boardgame.bot.model.BotState;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static lv.boardgame.bot.TextFinals.*;
 
 @Component
 public class AllCallbackQueryCommands {
@@ -31,14 +34,14 @@ public class AllCallbackQueryCommands {
 		final GameSessionLeavedCallback gameSessionLeavedCallback
 	) {
 		commands = new HashMap<>();
-		commands.put("ИГРОВАЯ ВСТРЕЧА ОТМЕНЕНА:", gameSessionDeletedCallback);
-		commands.put("WAITING_DATE", waitingDateCallback);
-		commands.put("WAITING_TIME", waitingTimeCallback);
-		commands.put("WAITING_IF_ORGANIZER_PLAYING", waitingIfOrganizerPlayingCallback);
-		commands.put("WAITING_MAX_PLAYER_COUNT", waitingMaxPlayerCountCallback);
-		commands.put("WAITING_COMMENT", waitingCommentCallback);
-		commands.put("ВЫ ПРИСОЕДИНИЛИСЬ К ВСТРЕЧЕ:", joinedGameSessionCallback);
-		commands.put("ВЫ ОТПИСАЛИСЬ ОТ ИГРОВОЙ ВСТРЕЧИ:", gameSessionLeavedCallback);
+		commands.put(SESSION_DELETED, gameSessionDeletedCallback);
+		commands.put(BotState.WAITING_DATE.toString(), waitingDateCallback);
+		commands.put(BotState.WAITING_TIME.toString(), waitingTimeCallback);
+		commands.put(BotState.WAITING_IF_ORGANIZER_PLAYING.toString(), waitingIfOrganizerPlayingCallback);
+		commands.put(BotState.WAITING_MAX_PLAYER_COUNT.toString(), waitingMaxPlayerCountCallback);
+		commands.put(BotState.WAITING_COMMENT.toString(), waitingCommentCallback);
+		commands.put(JOINED_SESSION, joinedGameSessionCallback);
+		commands.put(SESSION_LEAVED, gameSessionLeavedCallback);
 	}
 
 	public CallbackQueryCommand getCommand(String key) {

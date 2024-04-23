@@ -1,12 +1,13 @@
 package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.messages.CreateTableMessages;
+import lv.boardgame.bot.inlineKeyboard.MaxPlayerCountInlineKeyboardMarkup;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import static lv.boardgame.bot.messages.MessageUtil.*;
+import static lv.boardgame.bot.TextFinals.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 public class WaitingIfOrganizerPlayingCallback implements CallbackQueryCommand {
 
-	private final CreateTableMessages createTableMessages;
+	private MaxPlayerCountInlineKeyboardMarkup maxPlayerCountInlineKeyboardMarkup;
 
 	private final GameSessionConstructor gameSessionConstructor;
-
-	private static final String PLAYING = "Вы участвуете в игре сами";
-
-	private static final String NOT_PLAYING = "Вы не участвуете в игре, а только ее проводите";
 
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
@@ -33,7 +30,7 @@ public class WaitingIfOrganizerPlayingCallback implements CallbackQueryCommand {
 		}
 
 		gameSessionConstructor.setIfOrganizerPlaying(username, data);
-		messageList.add(createTableMessages.askForMaxPlayerCount(chatId));
+		messageList.add(getCustomMessageWithMarkup(chatId, MAX_PLAYER_COUNT, maxPlayerCountInlineKeyboardMarkup));
 		return messageList;
 	}
 }

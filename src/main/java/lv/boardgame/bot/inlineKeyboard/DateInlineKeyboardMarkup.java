@@ -5,9 +5,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static lv.boardgame.bot.TextFinals.CHOSE_DATE;
+import static lv.boardgame.bot.TextFinals.DATE_FORMATTER;
 
 @Component
 public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
@@ -25,7 +27,7 @@ public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		List<InlineKeyboardButton> daysButtons = days.stream()
 			.map(s -> InlineKeyboardButton.builder()
 				.text(s)
-				.callbackData("Выберите дату")
+				.callbackData(CHOSE_DATE)
 				.build())
 			.toList();
 		calendar.add(daysButtons);
@@ -36,7 +38,7 @@ public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		for (int i = 1; i < dayOfWeek; i++) {
 			firstWeek.add(InlineKeyboardButton.builder()
 				.text("-")
-				.callbackData("Выберите дату")
+				.callbackData(CHOSE_DATE)
 				.build());
 		}
 		for (int i = dayOfWeek; i <= 7; i++) {
@@ -44,7 +46,7 @@ public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 			firstWeek.add(
 				InlineKeyboardButton.builder()
 					.text(text)
-					.callbackData(counter.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+					.callbackData(counter.format(DATE_FORMATTER))
 					.build()
 			);
 			counter = counter.plusDays(1);
@@ -59,7 +61,7 @@ public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 				weekList.add(
 					InlineKeyboardButton.builder()
 						.text(text)
-						.callbackData(counter.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+						.callbackData(counter.format(DATE_FORMATTER))
 						.build()
 				);
 				counter = counter.plusDays(1);

@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+
+import static lv.boardgame.bot.TextFinals.DATE_FORMATTER;
+import static lv.boardgame.bot.TextFinals.TIME_FORMATTER;
 
 @Component
 public class GameSessionConstructor {
@@ -45,17 +47,15 @@ public class GameSessionConstructor {
 	}
 
 	public void setDate(String username, String dateString) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		GameSessionBotStatePair pair = getGameSessionByUsername(username);
 		pair.setBotState(BotState.WAITING_TIME);
-		LocalDate date = LocalDate.parse(dateString, formatter);
+		LocalDate date = LocalDate.parse(dateString, DATE_FORMATTER);
 		LocalTime time = LocalTime.of(0,0, 0);
 		pair.getGameSession().setDate(LocalDateTime.of(date, time));
 	}
 
 	public void setTime(String username, String timeString) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-		LocalTime time = LocalTime.parse(timeString, formatter);
+		LocalTime time = LocalTime.parse(timeString, TIME_FORMATTER);
 		GameSessionBotStatePair pair = getGameSessionByUsername(username);
 		pair.setBotState(BotState.WAITING_PLACE);
 		LocalDateTime dateTime = pair.getGameSession().getDate();

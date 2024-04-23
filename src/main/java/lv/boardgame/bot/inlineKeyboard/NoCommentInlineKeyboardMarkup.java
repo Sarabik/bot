@@ -6,14 +6,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+import static lv.boardgame.bot.TextFinals.NO_COMMENTS;
+
 @Component
 public class NoCommentInlineKeyboardMarkup extends InlineKeyboardMarkup {
 	public NoCommentInlineKeyboardMarkup() {
 		this.setKeyboard(List.of(
 			List.of(
 				InlineKeyboardButton.builder()
-				.text("Нет комментариев")
-				.callbackData("Нет комментариев")
+				.text(NO_COMMENTS)
+				.callbackData(NO_COMMENTS)
 				.build())
 			)
 		);

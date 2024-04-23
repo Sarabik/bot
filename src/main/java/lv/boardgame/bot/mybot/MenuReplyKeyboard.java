@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.List;
 
+import static lv.boardgame.bot.TextFinals.*;
+
 @Component
 public class MenuReplyKeyboard extends ReplyKeyboardMarkup {
 
@@ -14,9 +16,9 @@ public class MenuReplyKeyboard extends ReplyKeyboardMarkup {
 		this.setOneTimeKeyboard(false);
 		this.setResizeKeyboard(true);
 		this.setKeyboard(List.of(
-			createButtonRow(List.of("Все игровые встречи")),
-			createButtonRow(List.of("Присоединиться", "Отписаться")),
-			createButtonRow(List.of("Организовать встречу", "Отменить встречу"))
+			createButtonRow(List.of(ALL_GAME_SESSIONS)),
+			createButtonRow(List.of(JOIN, LEAVE)),
+			createButtonRow(List.of(ORGANIZE, DELETE))
 			)
 		);
 	}

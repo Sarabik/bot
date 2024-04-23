@@ -1,12 +1,12 @@
 package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.messages.CreateTableMessages;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import static lv.boardgame.bot.messages.MessageUtil.*;
+import static lv.boardgame.bot.TextFinals.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,6 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class WaitingTimeCallback implements CallbackQueryCommand {
-
-	private final CreateTableMessages createTableMessages;
 
 	private final GameSessionConstructor gameSessionConstructor;
 
@@ -25,7 +23,7 @@ public class WaitingTimeCallback implements CallbackQueryCommand {
 		messageList.add(getCustomMessage(chatId, data));
 
 		gameSessionConstructor.setTime(username, data);
-		messageList.add(createTableMessages.askForPlace(chatId));
+		messageList.add(getCustomMessage(chatId, PLACE));
 		return messageList;
 	}
 }

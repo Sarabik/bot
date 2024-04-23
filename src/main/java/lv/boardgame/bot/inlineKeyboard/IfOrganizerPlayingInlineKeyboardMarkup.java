@@ -6,6 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+import static lv.boardgame.bot.TextFinals.I_WILL_NOT_PLAY;
+import static lv.boardgame.bot.TextFinals.I_WILL_PLAY;
+
 @Component
 public class IfOrganizerPlayingInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
@@ -15,11 +18,11 @@ public class IfOrganizerPlayingInlineKeyboardMarkup extends InlineKeyboardMarkup
 
 	private static List<List<InlineKeyboardButton>> ifPlaying() {
 		InlineKeyboardButton buttonYes = InlineKeyboardButton.builder()
-			.text("Да, тоже буду играть")
+			.text(I_WILL_PLAY)
 			.callbackData("true")
 			.build();
 		InlineKeyboardButton buttonNo = InlineKeyboardButton.builder()
-			.text("Нет, хочу провести игру для других")
+			.text(I_WILL_NOT_PLAY)
 			.callbackData("false")
 			.build();
 		return List.of(List.of(buttonYes), List.of(buttonNo));

@@ -6,6 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+import static lv.boardgame.bot.TextFinals.DELETE_SESSION;
+import static lv.boardgame.bot.TextFinals.SESSION_DELETED;
+
 @Component
 public class DeleteGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
@@ -15,8 +18,8 @@ public class DeleteGameInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
 	private static List<List<InlineKeyboardButton>> ifPlaying() {
 		InlineKeyboardButton buttonYes = InlineKeyboardButton.builder()
-			.text("Отменить игровую встречу")
-			.callbackData("ИГРОВАЯ ВСТРЕЧА ОТМЕНЕНА:")
+			.text(DELETE_SESSION)
+			.callbackData(SESSION_DELETED)
 			.build();
 		return List.of(List.of(buttonYes));
 	}

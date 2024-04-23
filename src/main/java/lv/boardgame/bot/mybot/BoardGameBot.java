@@ -2,7 +2,7 @@ package lv.boardgame.bot.mybot;
 
 import lv.boardgame.bot.commands.AllCallbackQueryCommands;
 import lv.boardgame.bot.commands.AllMessageCommands;
-import lv.boardgame.bot.messages.EditTable;
+import lv.boardgame.bot.messages.MenuMessage;
 import lv.boardgame.bot.model.BotState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	private GameSessionConstructor gameSessionConstructor;
 
 	@Autowired
-	private EditTable editTable;
+	private MenuMessage menuMessage;
 
 	@Autowired
 	private AllMessageCommands allMessageCommands;
@@ -59,7 +59,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 					messageList = allMessageCommands
 						.getCommand(botState.toString()).execute(chatIdString, username, receivedText);
 				} else {
-					messageList.add(editTable.getMenuMessage(chatIdString));
+					messageList.add(menuMessage.getMenuMessage(chatIdString));
 				}
 				messageList.forEach(this::safeExecute);
 			}
@@ -80,7 +80,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				messageList = allCallbackQueryCommands.getCommand(data)
 					.execute(chatIdString, username, data, callbackQueryMessage);
 			} else {
-				messageList.add(editTable.getMenuMessage(chatIdString));
+				messageList.add(menuMessage.getMenuMessage(chatIdString));
 			}
 			messageList.forEach(this::safeExecute);
 			disableInlineKeyboardButtons(chatId, messageId);

@@ -10,10 +10,13 @@ import lv.boardgame.bot.commands.messageCommand.WaitingComment;
 import lv.boardgame.bot.commands.messageCommand.WaitingDate;
 import lv.boardgame.bot.commands.messageCommand.WaitingGameName;
 import lv.boardgame.bot.commands.messageCommand.WaitingPlace;
+import lv.boardgame.bot.model.BotState;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static lv.boardgame.bot.TextFinals.*;
 
 @Component
 public class AllMessageCommands {
@@ -32,15 +35,15 @@ public class AllMessageCommands {
 		final WaitingComment waitingComment
 	) {
 		commands = new HashMap<>();
-		commands.put("Организовать встречу", organizeGameSession);
-		commands.put("Все игровые встречи", allGameSessions);
-		commands.put("Присоединиться", joinGameSession);
-		commands.put("Отписаться", leaveGameSession);
-		commands.put("Отменить встречу", deleteGameSession);
-		commands.put("WAITING_DATE", waitingDate);
-		commands.put("WAITING_PLACE", waitingPlace);
-		commands.put("WAITING_GAME_NAME", waitingGameName);
-		commands.put("WAITING_COMMENT", waitingComment);
+		commands.put(ORGANIZE, organizeGameSession);
+		commands.put(ALL_GAME_SESSIONS, allGameSessions);
+		commands.put(JOIN, joinGameSession);
+		commands.put(LEAVE, leaveGameSession);
+		commands.put(DELETE, deleteGameSession);
+		commands.put(BotState.WAITING_DATE.toString(), waitingDate);
+		commands.put(BotState.WAITING_PLACE.toString(), waitingPlace);
+		commands.put(BotState.WAITING_GAME_NAME.toString(), waitingGameName);
+		commands.put(BotState.WAITING_COMMENT.toString(), waitingComment);
 	}
 
 	public MessageCommand getCommand(String key) {

@@ -5,9 +5,10 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static lv.boardgame.bot.TextFinals.TIME_FORMATTER;
 
 @Component
 public class TimeInlineKeyboardMarkup extends InlineKeyboardMarkup {
@@ -24,7 +25,7 @@ public class TimeInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		LocalTime time = START_TIME;
 		List<InlineKeyboardButton> list = new ArrayList<>();
 		for (int i = 0; i < 24; i++) {
-			String str = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+			String str = time.format(TIME_FORMATTER);
 			list.add(
 				InlineKeyboardButton.builder()
 					.text(str)
