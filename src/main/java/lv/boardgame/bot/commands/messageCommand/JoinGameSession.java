@@ -1,4 +1,4 @@
-package lv.boardgame.bot.command;
+package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.messages.EditTable;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class LeaveGameSession implements MessageCommand {
+public class JoinGameSession implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 
@@ -21,9 +21,9 @@ public class LeaveGameSession implements MessageCommand {
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
 		gameSessionConstructor.clear(username);
-		String str = "<b>Укажите от участия в какой игровой встрече вы хотели бы отписаться</b>";
-		messageList.add(editTable.getCustomMessage(chatId, str));
-		messageList.addAll(editTable.getAllTablesToLeave(chatId, username));
+		String st = "<b>Укажите к какой игровой встрече вы хотели бы присоединиться</b>";
+		messageList.add(editTable.getCustomMessage(chatId, st));
+		messageList.addAll(editTable.getAllTablesToJoin(chatId, username));
 		return messageList;
 	}
 }

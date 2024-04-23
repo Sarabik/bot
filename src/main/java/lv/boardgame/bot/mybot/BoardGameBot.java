@@ -1,10 +1,9 @@
 package lv.boardgame.bot.mybot;
 
-import lv.boardgame.bot.command.CallbackQueryCommand;
-import lv.boardgame.bot.messages.CreateTable;
-import lv.boardgame.bot.messages.EditTable;
+import lv.boardgame.bot.commands.AllCallbackQueryCommands;
+import lv.boardgame.bot.commands.AllMessageCommands;
 import lv.boardgame.bot.messages.MenuMessage;
-import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.BotState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,16 +25,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	private GameSessionConstructor gameSessionConstructor;
 
 	@Autowired
-	private CreateTable createTable;
-
-	@Autowired
 	private MenuMessage menuMessage;
-
-	@Autowired
-	private EditTable editTable;
-
-	@Autowired
-	private MenuReplyKeyboard menuReplyKeyboard;
 
 	@Autowired
 	private AllMessageCommands allMessageCommands;
@@ -83,75 +73,14 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			String chatIdString = String.valueOf(chatId);
 			BotState botState = gameSessionConstructor.getBotState(username);
 
-			SendMessage message1 = SendMessage.builder()
-				.chatId(chatIdString)
-				.parseMode("HTML")
-				.text(data)
-				.build();
-			messageList.add(message1);
-
-			/*SendMessage message2;
 			if (botState != null && allCallbackQueryCommands.ifContainsKey(botState.toString())) {
-				message2 = allCallbackQueryCommands.getCommand(botState.toString())
+				messageList = allCallbackQueryCommands.getCommand(botState.toString())
 					.execute(chatIdString, username, data, callbackQueryMessage);
 			} else if (allCallbackQueryCommands.ifContainsKey(data)) {
-				message2 = allCallbackQueryCommands.getCommand(data)
+				messageList = allCallbackQueryCommands.getCommand(data)
 					.execute(chatIdString, username, data, callbackQueryMessage);
 			} else {
-				message2 = SendMessage.builder()
-					.chatId(chatIdString)
-					.parseMode("HTML")
-					.text("<b>Используйте кнопки меню внизу</b>")
-					.replyMarkup(menuReplyKeyboard)
-					.build();
-			}
-			messageList.add(message2);
-			messageList.forEach(this::safeExecute);
-			disableInlineKeyboardButtons(chatId, messageId);*/
-
-
-			if (gameSessionConstructor.getBotState(username) == BotState.WAITING_DATE && "Выберите дату".equals(data)) {
-				messageList.add(createTable.askForDate(chatIdString));
-			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_DATE) {
-				gameSessionConstructor.setDate(username, data);
-				messageList.add(createTable.askForTime(chatIdString));
-			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_TIME) {
-				gameSessionConstructor.setTime(username, data);
-				messageList.add(createTable.askForPlace(chatIdString));
-			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_IF_ORGANIZER_PLAYING) {
-				gameSessionConstructor.setIfOrganizerPlaying(username, data);
-				message1.setText("true".equals(data) ? "Вы участвуете в игре сами" : "Вы не участвуете в игре, а только ее проводите");
-				messageList.add(createTable.askForMaxPlayerCount(chatIdString));
-			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_MAX_PLAYER_COUNT) {
-				gameSessionConstructor.setMaxPlayerCount(username, data);
-				messageList.add(createTable.askForComment(chatIdString));
-			} else if (gameSessionConstructor.getBotState(username) == BotState.WAITING_COMMENT) {
-				gameSessionConstructor.setComment(username, data);
-				messageList.add(createTable.savingTable(chatIdString, gameSessionConstructor.getGameSession(username)));
-				gameSessionConstructor.clear(username);
-			} else if ("ИГРОВАЯ ВСТРЕЧА ОТМЕНЕНА:".equals(data)) {
-				String date = callbackQueryMessage.getEntities().get(1).getText();
-				String organizer = callbackQueryMessage.getEntities().get(8).getText().substring(1);
-				GameSession session = editTable.deleteTable(date, organizer);
-				messageList.add(editTable.getEditedSession(chatIdString, session));
-			} else if ("ВЫ ПРИСОЕДИНИЛИСЬ К ВСТРЕЧЕ:".equals(data)) {
-				String date = callbackQueryMessage.getEntities().get(1).getText();
-				String organizer = callbackQueryMessage.getEntities().get(8).getText().substring(1);
-				GameSession session = editTable.addPlayerToTable(date, organizer, username);
-				messageList.add(editTable.getEditedSession(chatIdString, session));
-			} else if ("ВЫ ОТПИСАЛИСЬ ОТ ИГРОВОЙ ВСТРЕЧИ:".equals(data)) {
-				String date = callbackQueryMessage.getEntities().get(1).getText();
-				String organizer = callbackQueryMessage.getEntities().get(8).getText().substring(1);
-				GameSession session = editTable.leaveGameTable(date, organizer, username);
-				messageList.add(editTable.getEditedSession(chatIdString, session));
-			} else {
-				SendMessage sendMessage = SendMessage.builder()
-					.chatId(chatIdString)
-					.parseMode("HTML")
-					.text("<b>Используйте кнопки меню внизу</b>")
-					.replyMarkup(menuReplyKeyboard)
-					.build();
-				messageList.add(sendMessage);
+				messageList.add(menuMessage.getMenuMessage(chatIdString));
 			}
 			messageList.forEach(this::safeExecute);
 			disableInlineKeyboardButtons(chatId, messageId);

@@ -1,4 +1,4 @@
-package lv.boardgame.bot.mybot;
+package lv.boardgame.bot.model;
 
 public enum BotState {
 	START,

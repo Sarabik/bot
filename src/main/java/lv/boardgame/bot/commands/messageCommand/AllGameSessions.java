@@ -1,4 +1,4 @@
-package lv.boardgame.bot.command;
+package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.messages.EditTable;

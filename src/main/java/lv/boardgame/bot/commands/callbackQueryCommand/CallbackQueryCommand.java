@@ -1,10 +1,12 @@
-package lv.boardgame.bot.command;
+package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.List;
+
 public interface CallbackQueryCommand {
 
-	SendMessage execute(String chatId, String username, String data, Message message);
+	List<SendMessage> execute(String chatId, String username, String data, Message message);
 
 }

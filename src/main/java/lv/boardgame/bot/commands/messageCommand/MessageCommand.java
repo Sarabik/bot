@@ -1,4 +1,4 @@
-package lv.boardgame.bot.command;
+package lv.boardgame.bot.commands.messageCommand;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 

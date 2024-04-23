@@ -1,7 +1,7 @@
-package lv.boardgame.bot.command;
+package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.messages.CreateTable;
+import lv.boardgame.bot.messages.EditTable;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,18 +11,19 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class WaitingComment implements MessageCommand {
+public class DeleteGameSession implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 
-	private CreateTable createTable;
+	private EditTable editTable;
 
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		gameSessionConstructor.setComment(username, receivedText);
-		messageList.add(createTable.savingTable(chatId, gameSessionConstructor.getGameSession(username)));
 		gameSessionConstructor.clear(username);
+		String str = "<b>Укажите какую организованную вами игровую встречу вы хотели бы отменить</b>";
+		messageList.add(editTable.getCustomMessage(chatId, str));
+		messageList.addAll(editTable.getAllTablesToDelete(chatId, username));
 		return messageList;
 	}
 }

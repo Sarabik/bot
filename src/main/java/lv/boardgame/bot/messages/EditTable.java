@@ -86,23 +86,13 @@ public class EditTable {
 			joiner.add(getString(session));
 			joiner.add("");
 		}
-		return SendMessage.builder()
-			.chatId(chatIdString)
-			.parseMode("HTML")
-			.text(joiner.toString())
-			.build();
+		return getCustomMessage(chatIdString, joiner.toString());
 	}
 
 	private List<SendMessage> getListOfMessages(List<GameSession> list, InlineKeyboardMarkup markup, String chatId) {
 		List<SendMessage> resultList = new ArrayList<>();
 		for (GameSession session : list) {
-			SendMessage message = SendMessage.builder()
-				.chatId(chatId)
-				.parseMode("HTML")
-				.text(getString(session))
-				.replyMarkup(markup)
-				.build();
-			resultList.add(message);
+			resultList.add(getCustomMessageWithMarkup(chatId, getString(session), markup));
 		}
 		return resultList;
 	}
@@ -136,11 +126,7 @@ public class EditTable {
 	}
 
 	public SendMessage getEditedSession(String chatIdString, GameSession gameSession) {
-		return SendMessage.builder()
-			.chatId(chatIdString)
-			.parseMode("HTML")
-			.text(getString(gameSession))
-			.build();
+		return getCustomMessage(chatIdString, getString(gameSession));
 	}
 
 	public SendMessage getCustomMessage(String chatIdString, String text) {
@@ -149,5 +135,11 @@ public class EditTable {
 			.parseMode("HTML")
 			.text(text)
 			.build();
+	}
+
+	public SendMessage getCustomMessageWithMarkup(String chatIdString, String text, InlineKeyboardMarkup markup) {
+		SendMessage message = getCustomMessage(chatIdString, text);
+		message.setReplyMarkup(markup);
+		return message;
 	}
 }

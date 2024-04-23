@@ -1,15 +1,15 @@
-package lv.boardgame.bot.mybot;
+package lv.boardgame.bot.commands;
 
-import lv.boardgame.bot.command.AllGameSessions;
-import lv.boardgame.bot.command.MessageCommand;
-import lv.boardgame.bot.command.DeleteGameSession;
-import lv.boardgame.bot.command.JoinGameSession;
-import lv.boardgame.bot.command.LeaveGameSession;
-import lv.boardgame.bot.command.OrganizeGameSession;
-import lv.boardgame.bot.command.WaitingComment;
-import lv.boardgame.bot.command.WaitingDate;
-import lv.boardgame.bot.command.WaitingGameName;
-import lv.boardgame.bot.command.WaitingPlace;
+import lv.boardgame.bot.commands.messageCommand.AllGameSessions;
+import lv.boardgame.bot.commands.messageCommand.MessageCommand;
+import lv.boardgame.bot.commands.messageCommand.DeleteGameSession;
+import lv.boardgame.bot.commands.messageCommand.JoinGameSession;
+import lv.boardgame.bot.commands.messageCommand.LeaveGameSession;
+import lv.boardgame.bot.commands.messageCommand.OrganizeGameSession;
+import lv.boardgame.bot.commands.messageCommand.WaitingComment;
+import lv.boardgame.bot.commands.messageCommand.WaitingDate;
+import lv.boardgame.bot.commands.messageCommand.WaitingGameName;
+import lv.boardgame.bot.commands.messageCommand.WaitingPlace;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

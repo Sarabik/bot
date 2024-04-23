@@ -1,5 +1,8 @@
 package lv.boardgame.bot.mybot;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lv.boardgame.bot.model.BotState;
 import lv.boardgame.bot.model.GameSession;
 import org.springframework.stereotype.Component;
 
@@ -19,16 +22,8 @@ public class GameSessionConstructor {
 		return getGameSessionByUsername(username).getGameSession();
 	}
 
-	public Map<String, GameSessionBotStatePair> getMap() {
-		return constructorMap;
-	}
-
 	private GameSessionBotStatePair getGameSessionByUsername(String username) {
 		return constructorMap.get(username);
-	}
-
-	public boolean ifContentsUsername(String username) {
-		return constructorMap.containsKey(username);
 	}
 
 	public BotState getBotState(String username) {
@@ -86,15 +81,20 @@ public class GameSessionConstructor {
 	}
 
 	public void setComment(String username, String comment) {
-		if (!"Нет комментариев".equals(comment)) {
-			GameSessionBotStatePair pair = getGameSessionByUsername(username);
+		GameSessionBotStatePair pair = getGameSessionByUsername(username);
 			pair.getGameSession().setComment(comment);
-		}
 	}
 
 	public void setMaxPlayerCount(String username, String count) {
 		GameSessionBotStatePair pair = getGameSessionByUsername(username);
 		pair.setBotState(BotState.WAITING_COMMENT);
 		pair.getGameSession().setMaxPlayerCount(Integer.parseInt(count));
+	}
+
+	@Data
+	@AllArgsConstructor
+	public static final class GameSessionBotStatePair {
+		private GameSession gameSession;
+		private BotState botState;
 	}
 }

@@ -1,4 +1,4 @@
-package lv.boardgame.bot.command;
+package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.messages.CreateTable;
@@ -11,17 +11,22 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class WaitingPlace implements MessageCommand {
+public class WaitingComment implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 
 	private CreateTable createTable;
 
+	private final static String NO_COMMENTS = "Нет комментариев";
+
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		gameSessionConstructor.setPlace(username,receivedText);
-		messageList.add(createTable.askForGameName(chatId));
+		if (!NO_COMMENTS.equals(receivedText)) {
+			gameSessionConstructor.setComment(username, receivedText);
+		}
+		messageList.add(createTable.savingTable(chatId, gameSessionConstructor.getGameSession(username)));
+		gameSessionConstructor.clear(username);
 		return messageList;
 	}
 }
