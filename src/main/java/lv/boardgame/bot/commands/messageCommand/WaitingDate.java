@@ -1,7 +1,7 @@
 package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.messages.CreateTable;
+import lv.boardgame.bot.messages.CreateTableMessages;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 public class WaitingDate implements MessageCommand {
 
-	private CreateTable createTable;
+	private CreateTableMessages createTableMessages;
 
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		messageList.add(createTable.askForDate(chatId));
+		messageList.add(createTableMessages.askForDate(chatId));
 		return messageList;
 	}
 }

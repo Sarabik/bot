@@ -2,7 +2,6 @@ package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.messages.EditTable;
-import lv.boardgame.bot.messages.MenuMessage;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,8 +15,6 @@ public class AllGameSessions implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 
-	private MenuMessage menuMessage;
-
 	private EditTable editTable;
 
 	@Override
@@ -25,7 +22,7 @@ public class AllGameSessions implements MessageCommand {
 		List<SendMessage> messageList = new ArrayList<>();
 		gameSessionConstructor.clear(username);
 		messageList.add(editTable.getAllTables(chatId));
-		messageList.add(menuMessage.getMenuMessage(chatId));
+		messageList.add(editTable.getMenuMessage(chatId));
 		return messageList;
 	}
 }

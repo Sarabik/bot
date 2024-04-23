@@ -5,22 +5,22 @@ import lv.boardgame.bot.inlineKeyboard.DeleteGameInlineKeyboardMarkup;
 import lv.boardgame.bot.inlineKeyboard.JoinGameInlineKeyboardMarkup;
 import lv.boardgame.bot.inlineKeyboard.LeaveGameInlineKeyboardMarkup;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.mybot.MenuReplyKeyboard;
 import lv.boardgame.bot.service.GameSessionService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import static lv.boardgame.bot.messages.MessageUtil.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-
-import static lv.boardgame.bot.messages.ConvertGameSessionToString.getString;
 
 @Component
 @AllArgsConstructor
 public class EditTable {
+
+	private MenuReplyKeyboard menuReplyKeyboard;
 
 	private GameSessionService gameSessionService;
 
@@ -83,18 +83,10 @@ public class EditTable {
 		int counter = 1;
 		for (GameSession session : gameSessionList) {
 			joiner.add(counter++ + ".");
-			joiner.add(getString(session));
+			joiner.add(convertGameSessionToString(session));
 			joiner.add("");
 		}
 		return getCustomMessage(chatIdString, joiner.toString());
-	}
-
-	private List<SendMessage> getListOfMessages(List<GameSession> list, InlineKeyboardMarkup markup, String chatId) {
-		List<SendMessage> resultList = new ArrayList<>();
-		for (GameSession session : list) {
-			resultList.add(getCustomMessageWithMarkup(chatId, getString(session), markup));
-		}
-		return resultList;
 	}
 
 	public GameSession deleteTable(String date, String organizer) {
@@ -125,21 +117,15 @@ public class EditTable {
 		gameSessionService.deleteOutdatedGameSessions();
 	}
 
-	public SendMessage getEditedSession(String chatIdString, GameSession gameSession) {
-		return getCustomMessage(chatIdString, getString(gameSession));
-	}
-
-	public SendMessage getCustomMessage(String chatIdString, String text) {
+	public SendMessage getMenuMessage(String chatIdString) {
 		return SendMessage.builder()
 			.chatId(chatIdString)
 			.parseMode("HTML")
-			.text(text)
+			.text("<b>Для того чтобы</b>" + System.lineSeparator() +
+				"  <i>1) присоединиться или отписаться от игровой встречи</i>" + System.lineSeparator() +
+				"  <i>2) создать или отменить свою игровую встречу</i>" + System.lineSeparator() +
+				"<b>используйте кнопки меню внизу</b>")
+			.replyMarkup(menuReplyKeyboard)
 			.build();
-	}
-
-	public SendMessage getCustomMessageWithMarkup(String chatIdString, String text, InlineKeyboardMarkup markup) {
-		SendMessage message = getCustomMessage(chatIdString, text);
-		message.setReplyMarkup(markup);
-		return message;
 	}
 }

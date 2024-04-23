@@ -1,7 +1,7 @@
 package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.messages.CreateTable;
+import lv.boardgame.bot.messages.CreateTableMessages;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,7 +15,7 @@ public class WaitingComment implements MessageCommand {
 
 	private GameSessionConstructor gameSessionConstructor;
 
-	private CreateTable createTable;
+	private CreateTableMessages createTableMessages;
 
 	private final static String NO_COMMENTS = "Нет комментариев";
 
@@ -25,7 +25,7 @@ public class WaitingComment implements MessageCommand {
 		if (!NO_COMMENTS.equals(receivedText)) {
 			gameSessionConstructor.setComment(username, receivedText);
 		}
-		messageList.add(createTable.savingTable(chatId, gameSessionConstructor.getGameSession(username)));
+		messageList.add(createTableMessages.savingTable(chatId, gameSessionConstructor.getGameSession(username)));
 		gameSessionConstructor.clear(username);
 		return messageList;
 	}

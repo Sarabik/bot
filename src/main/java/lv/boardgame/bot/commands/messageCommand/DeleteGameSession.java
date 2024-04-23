@@ -5,6 +5,7 @@ import lv.boardgame.bot.messages.EditTable;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import static lv.boardgame.bot.messages.MessageUtil.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class DeleteGameSession implements MessageCommand {
 		List<SendMessage> messageList = new ArrayList<>();
 		gameSessionConstructor.clear(username);
 		String str = "<b>Укажите какую организованную вами игровую встречу вы хотели бы отменить</b>";
-		messageList.add(editTable.getCustomMessage(chatId, str));
+		messageList.add(getCustomMessage(chatId, str));
 		messageList.addAll(editTable.getAllTablesToDelete(chatId, username));
 		return messageList;
 	}

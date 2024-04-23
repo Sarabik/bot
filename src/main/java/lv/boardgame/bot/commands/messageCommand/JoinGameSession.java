@@ -5,6 +5,7 @@ import lv.boardgame.bot.messages.EditTable;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import static lv.boardgame.bot.messages.MessageUtil.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class JoinGameSession implements MessageCommand {
 		List<SendMessage> messageList = new ArrayList<>();
 		gameSessionConstructor.clear(username);
 		String st = "<b>Укажите к какой игровой встрече вы хотели бы присоединиться</b>";
-		messageList.add(editTable.getCustomMessage(chatId, st));
+		messageList.add(getCustomMessage(chatId, st));
 		messageList.addAll(editTable.getAllTablesToJoin(chatId, username));
 		return messageList;
 	}
