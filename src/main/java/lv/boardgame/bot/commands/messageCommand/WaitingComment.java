@@ -1,9 +1,12 @@
 package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
+import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import lv.boardgame.bot.service.GameSessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import static lv.boardgame.bot.TextFinals.*;
@@ -18,6 +21,8 @@ import static lv.boardgame.bot.messages.MessageUtil.getCustomMessage;
 @AllArgsConstructor
 public class WaitingComment implements MessageCommand {
 
+	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
+
 	private GameSessionConstructor gameSessionConstructor;
 
 	private GameSessionService gameSessionService;
@@ -25,10 +30,10 @@ public class WaitingComment implements MessageCommand {
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		if (!NO_COMMENTS.equals(receivedText)) {
-			gameSessionConstructor.setComment(username, receivedText);
-		}
-		messageList.add(savingTable(chatId, gameSessionConstructor.getGameSession(username)));
+		gameSessionConstructor.setComment(username, receivedText);
+		GameSession savedGameSession = gameSessionConstructor.getGameSession(username);
+		LOG.info("{} -> Game session saved: {}", username, savedGameSession);
+		messageList.add(savingTable(chatId, savedGameSession));
 		gameSessionConstructor.clear(username);
 		return messageList;
 	}

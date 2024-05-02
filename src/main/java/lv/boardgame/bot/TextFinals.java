@@ -30,6 +30,8 @@ public class TextFinals {
 
 	public final static String TIME = "<b>Время:</b>";
 
+	public static final String CHOSE_TIME = "Выберите время";
+
 	public final static String PLACE = "<b>Место (адрес, заведение и т.д.):</b>";
 
 	public final static String GAME_NAME = "<b>Название игры или нескольких игр:</b>";
@@ -45,6 +47,8 @@ public class TextFinals {
 	public static final String NOT_PLAYING = "Вы не участвуете в игре, а только ее проводите";
 
 	public final static String MAX_PLAYER_COUNT = "<b>Максимальное количество игроков (включая вас, если играете):</b>";
+
+	public final static String CHOSE_MAX_PLAYER_COUNT = "Выберите максимальное количество игроков";
 
 	public final static String WRITE_COMMENT = "<b>Если хотите, напишите комментарий или дополнительную информацию:</b>";
 

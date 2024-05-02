@@ -1,9 +1,12 @@
 package lv.boardgame.bot.service;
 
 import lombok.AllArgsConstructor;
+import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.repository.GameSessionRepository;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +17,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class GameSessionServiceImpl implements GameSessionService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
 
 	private final GameSessionRepository repository;
 
@@ -64,6 +69,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 		for (GameSession gs : list) {
 			if (gs.getDate().isBefore(date)) {
 				repository.deleteById(gs.getId());
+				LOG.info("Deleted outdated game session: {}", gs);
 			}
 		}
 	}

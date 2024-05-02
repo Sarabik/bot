@@ -1,6 +1,7 @@
 package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import lombok.AllArgsConstructor;
+import lv.boardgame.bot.inlineKeyboard.MaxPlayerCountInlineKeyboardMarkup;
 import lv.boardgame.bot.inlineKeyboard.NoCommentInlineKeyboardMarkup;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
@@ -17,16 +18,21 @@ import java.util.List;
 @AllArgsConstructor
 public class WaitingMaxPlayerCountCallback implements CallbackQueryCommand {
 
-	private NoCommentInlineKeyboardMarkup noCommentInlineKeyboardMarkup;
+	private final NoCommentInlineKeyboardMarkup noCommentInlineKeyboardMarkup;
+
+	private final MaxPlayerCountInlineKeyboardMarkup maxPlayerCountInlineKeyboardMarkup;
 
 	private final GameSessionConstructor gameSessionConstructor;
 
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
 		List<SendMessage> messageList = getStartList(chatId, data);
-
-		gameSessionConstructor.setMaxPlayerCount(username, data);
-		messageList.add(getCustomMessageWithMarkup(chatId, WRITE_COMMENT, noCommentInlineKeyboardMarkup));
+		if (CHOSE_MAX_PLAYER_COUNT.equals(data)) {
+			messageList.add(getCustomMessageWithMarkup(chatId, MAX_PLAYER_COUNT, maxPlayerCountInlineKeyboardMarkup));
+		} else {
+			gameSessionConstructor.setMaxPlayerCount(username, data);
+			messageList.add(getCustomMessageWithMarkup(chatId, WRITE_COMMENT, noCommentInlineKeyboardMarkup));
+		}
 		return messageList;
 	}
 }

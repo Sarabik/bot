@@ -3,6 +3,8 @@ package lv.boardgame.bot.commands.callbackQueryCommand;
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.service.GameSessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -17,6 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 public class GameSessionDeletedCallback implements CallbackQueryCommand {
 
+	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
+
 	private final GameSessionService gameSessionService;
 
 	@Override
@@ -24,6 +28,7 @@ public class GameSessionDeletedCallback implements CallbackQueryCommand {
 		List<SendMessage> messageList = getStartList(chatId, data);
 		GameSession gameSession = getGameSession(message, gameSessionService);
 		gameSessionService.deleteGameSessionById(gameSession.getId());
+		LOG.info("{} -> Deleted game session: {}", username, gameSession);
 		messageList.add(getEditedSession(chatId, gameSession));
 		return messageList;
 	}
