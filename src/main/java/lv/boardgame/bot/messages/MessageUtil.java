@@ -1,6 +1,7 @@
 package lv.boardgame.bot.messages;
 
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
@@ -44,14 +45,14 @@ public class MessageUtil {
 		joiner.add("<b>Когда:  </b><i>" + date + "</i>");
 		joiner.add("<b>Где:  </b><i>" + gmSession.getPlace() + "</i>");
 		joiner.add("<b>Игра / игры:  </b><i>" + gmSession.getGameName() + "</i>");
-		joiner.add("<b>Организатор:  </b><i>@" + gmSession.getOrganizerUsername() + "</i>");
+		joiner.add("<b>Организатор:  </b><i>@" + gmSession.getOrganizer().getUsername() + "</i>");
 		if (gmSession.getComment() != null) {
 			joiner.add("<b>Комментарий:  </b><i>" + gmSession.getComment() + "</i>");
 		}
 		if (!gmSession.getPlayers().isEmpty()) {
 			StringJoiner nameJoiner = new StringJoiner(", ");
-			for (String name : gmSession.getPlayers()) {
-				nameJoiner.add("@" + name);
+			for (Player player : gmSession.getPlayers()) {
+				nameJoiner.add("@" + player.getUsername());
 			}
 			joiner.add("<b>Играют:  </b><i>" + nameJoiner + "</i>");
 		}

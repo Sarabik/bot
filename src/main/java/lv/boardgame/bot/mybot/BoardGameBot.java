@@ -41,6 +41,9 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(final Update update) {
+		/*if(isPublicChats(update)) {
+			return;
+		}*/
 		List<SendMessage> messageList = new ArrayList<>();
 
 		if(update.hasMessage()){
@@ -116,5 +119,10 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		} catch (TelegramApiException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private boolean isPublicChats(Update update) {
+		String chatType = update.getMessage().getChat().getType();
+		return chatType.equals("group") || chatType.equals("supergroup");
 	}
 }

@@ -20,12 +20,12 @@ import java.util.Set;
 public class GameSession {
 	@Id
 	private ObjectId id;
-	private String organizerUsername;
+	private Player organizer;
 	private boolean isOrganizerPlaying;
 	private LocalDateTime date;
 	private String place;
 	private String gameName;
 	private int maxPlayerCount;
-	private Set<String> players = new HashSet<>();
+	private Set<Player> players = new HashSet<>();
 	private String comment;
 }

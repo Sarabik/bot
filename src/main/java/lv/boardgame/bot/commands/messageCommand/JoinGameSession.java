@@ -3,6 +3,7 @@ package lv.boardgame.bot.commands.messageCommand;
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.inlineKeyboard.JoinGameInlineKeyboardMarkup;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import lv.boardgame.bot.service.GameSessionService;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,8 @@ public class JoinGameSession implements MessageCommand {
 
 		List<GameSession> gameSessionList = gameSessionService.findAllGameSessions();
 		List<GameSession> gameSessionToJoin = gameSessionList.stream()
-			.filter(s -> !(username.equals(s.getOrganizerUsername()) || s.getPlayers().contains(username))
+			.filter(s -> !(username.equals(s.getOrganizer().getUsername()) ||
+					s.getPlayers().stream().map(Player::getUsername).toList().contains(username))
 				&& s.getMaxPlayerCount() - s.getPlayers().size() > 0)
 			.toList();
 		if (gameSessionToJoin.isEmpty()) {

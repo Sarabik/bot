@@ -36,7 +36,7 @@ public class DeleteGameSession implements MessageCommand {
 		gameSessionService.deleteOutdatedGameSessions();
 		List<GameSession> gameSessionList = gameSessionService.findAllGameSessions();
 		List<GameSession> gameSessionToDelete = gameSessionList.stream()
-			.filter(s -> username.equals(s.getOrganizerUsername()))
+			.filter(s -> username.equals(s.getOrganizer().getUsername()))
 			.toList();
 		if (gameSessionToDelete.isEmpty()) {
 			return List.of(getCustomMessage(chatIdString, NO_ORGANIZED));

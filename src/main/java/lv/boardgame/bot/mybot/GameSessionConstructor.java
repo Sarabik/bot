@@ -5,6 +5,7 @@ import lombok.Data;
 import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.BotState;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -49,10 +50,10 @@ public class GameSessionConstructor {
 		constructorMap.remove(username);
 	}
 
-	public void start(String username) {
+	public void start(String chatId, String username) {
 		LOG.info("{} -> New session creation is started", username);
 		GameSession gs = new GameSession();
-		gs.setOrganizerUsername(username);
+		gs.setOrganizer(new Player(chatId, username));
 		constructorMap.put(username, new GameSessionBotStatePair(gs, BotState.WAITING_DATE));
 		LOG.info("{} -> Bot state is changed to WAITING_DATE", username);
 	}

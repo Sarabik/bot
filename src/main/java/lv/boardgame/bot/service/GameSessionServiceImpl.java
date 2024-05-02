@@ -25,7 +25,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 	@Override
 	public GameSession saveNewGameSession(final GameSession gameSession) {
 		if (gameSession.isOrganizerPlaying()) {
-			gameSession.getPlayers().add(gameSession.getOrganizerUsername());
+			gameSession.getPlayers().add(gameSession.getOrganizer());
 		}
 		return repository.save(gameSession);
 	}
@@ -77,7 +77,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 	@Override
 	public GameSession findGameSessionByDateAndOrganizer(LocalDateTime date, String organizer) {
 		Optional<GameSession> opt = findAllGameSessions().stream()
-			.filter(s -> s.getDate().equals(date) && s.getOrganizerUsername().equals(organizer))
+			.filter(s -> date.equals(s.getDate()) && organizer.equals(s.getOrganizer().getUsername()))
 			.findFirst();
 		return opt.orElse(null);
 	}

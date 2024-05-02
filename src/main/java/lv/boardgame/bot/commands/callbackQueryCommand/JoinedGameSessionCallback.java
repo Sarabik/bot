@@ -2,6 +2,7 @@ package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.service.GameSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class JoinedGameSessionCallback implements CallbackQueryCommand {
 	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
 		List<SendMessage> messageList = getStartList(chatId, data);
 		GameSession gameSession = getGameSession(message, gameSessionService);
-		gameSession.getPlayers().add(username);
+		gameSession.getPlayers().add(new Player(chatId, username));
 		gameSession = gameSessionService.updateGameSession(gameSession);
 		LOG.info("{} -> Joined game session: {}", username, gameSession);
 		messageList.add(getEditedSession(chatId, gameSession));

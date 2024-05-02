@@ -23,7 +23,7 @@ public class OrganizeGameSession implements MessageCommand {
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
 		List<SendMessage> messageList = CallbackQueryUtil.getStartList(chatId, START);
-		gameSessionConstructor.start(username);
+		gameSessionConstructor.start(chatId, username);
 		messageList.add(getCustomMessageWithMarkup(chatId, DATA, dateInlineKeyboardMarkup));
 		return messageList;
 	}

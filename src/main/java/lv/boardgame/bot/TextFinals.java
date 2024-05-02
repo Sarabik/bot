@@ -1,5 +1,7 @@
 package lv.boardgame.bot;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.time.format.DateTimeFormatter;
 
 public class TextFinals {
@@ -100,5 +102,4 @@ public class TextFinals {
 		"  <i>1) присоединиться или отписаться от игровой встречи</i>" + System.lineSeparator() +
 		"  <i>2) создать или отменить свою игровую встречу</i>" + System.lineSeparator() +
 		"<b>используйте кнопки меню внизу</b>";
-
 }

@@ -3,6 +3,7 @@ package lv.boardgame.bot.commands.messageCommand;
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.inlineKeyboard.LeaveGameInlineKeyboardMarkup;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import lv.boardgame.bot.service.GameSessionService;
 import org.springframework.stereotype.Component;
@@ -36,7 +37,8 @@ public class LeaveGameSession implements MessageCommand {
 		gameSessionService.deleteOutdatedGameSessions();
 		List<GameSession> gameSessionList = gameSessionService.findAllGameSessions();
 		List<GameSession> gameSessionToLeave = gameSessionList.stream()
-			.filter(s -> (!username.equals(s.getOrganizerUsername()) && s.getPlayers().contains(username)))
+			.filter(s -> (!username.equals(s.getOrganizer().getUsername()) &&
+				s.getPlayers().stream().map(Player::getUsername).toList().contains(username)))
 			.toList();
 		if (gameSessionToLeave.isEmpty()) {
 			return List.of(getCustomMessage(chatIdString, DONT_JOIN));
