@@ -1,9 +1,13 @@
 package lv.boardgame.bot.mybot;
 
+import lv.boardgame.bot.commands.AllAdminCommands;
 import lv.boardgame.bot.commands.AllCallbackQueryCommands;
 import lv.boardgame.bot.commands.AllMessageCommands;
+import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.messages.MenuMessage;
 import lv.boardgame.bot.model.BotState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,6 +25,8 @@ import java.util.List;
 @Component
 public class BoardGameBot extends TelegramLongPollingBot {
 
+	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
+
 	@Autowired
 	private GameSessionConstructor gameSessionConstructor;
 
@@ -33,6 +39,9 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	@Autowired
 	private AllCallbackQueryCommands allCallbackQueryCommands;
 
+	@Autowired
+	private AllAdminCommands allAdminCommands;
+
 	@Value("${telegram.bot.username}")
 	private String botUsername;
 
@@ -41,9 +50,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(final Update update) {
-		/*if(isPublicChats(update)) {
-			return;
-		}*/
 		List<SendMessage> messageList = new ArrayList<>();
 
 		if(update.hasMessage()){
@@ -61,6 +67,10 @@ public class BoardGameBot extends TelegramLongPollingBot {
 				} else if (botState != null && allMessageCommands.ifContainsKey(botState.toString())) {
 					messageList = allMessageCommands
 						.getCommand(botState.toString()).execute(chatIdString, username, receivedText);
+				} else if (allAdminCommands.ifContainsKey(receivedText.split(" ")[0])) {
+					messageList = allAdminCommands
+						.getCommand(receivedText.split(" ")[0])
+						.execute(chatIdString, username, receivedText);
 				} else {
 					messageList.add(menuMessage.getMenuMessage(chatIdString));
 				}
@@ -109,7 +119,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		try {
 			execute(editMessageReplyMarkup);
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 	}
 
@@ -119,10 +129,5 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		} catch (TelegramApiException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private boolean isPublicChats(Update update) {
-		String chatType = update.getMessage().getChat().getType();
-		return chatType.equals("group") || chatType.equals("supergroup");
 	}
 }

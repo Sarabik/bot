@@ -1,7 +1,5 @@
 package lv.boardgame.bot;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import java.time.format.DateTimeFormatter;
 
 public class TextFinals {
@@ -102,4 +100,18 @@ public class TextFinals {
 		"  <i>1) присоединиться или отписаться от игровой встречи</i>" + System.lineSeparator() +
 		"  <i>2) создать или отменить свою игровую встречу</i>" + System.lineSeparator() +
 		"<b>используйте кнопки меню внизу</b>";
+
+	/*SuperAdminCommands*/
+
+	public final static String ADD_ADMIN = "add_admin";
+	public final static String DELETE_ADMIN = "delete_admin";
+	public final static String GET_ADMIN_LIST = "get_admin_list";
+
+	public final static String ADMIN_DELETED = "Удален админ: ";
+	public final static String NO_ADMIN_ACCESS = "У вас нет доступа к этой команде";
+	public final static String NO_ADMINS = "В списке нет админов";
+	public final static String ADMIN_ADDED = "Добавлен админ: ";
+
+	/*AdminCommands*/
+	public final static String ADMIN_DELETE_SESSION = "delete_session";
 }
