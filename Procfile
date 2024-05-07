@@ -1,1 +1,1 @@
-worker: java -Xmx300m -Xss512k -XX:CICompilerCount=2 -Dfile.encoding=UTF-8 -cp ./target/classes:./target/dependency/* target.classes.lv.boardgame.bot.BotApplication
+worker: java -Xmx300m -Xss512k -XX:CICompilerCount=2 -Dfile.encoding=UTF-8 -cp target/classes:target/dependency/* lv.boardgame.bot.BotApplication
