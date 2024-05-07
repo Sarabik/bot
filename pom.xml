@@ -64,7 +64,7 @@
                     <assembleDirectory>target</assembleDirectory>
                     <programs>
                         <program>
-                            <mainClass>classes.lv.boardgame.bot.BotApplication</mainClass>
+                            <mainClass>BotApplication</mainClass>
                             <name>worker</name>
                         </program>
                     </programs>
