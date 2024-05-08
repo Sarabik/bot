@@ -34,7 +34,6 @@ public class MaxPlayerCountInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		}
 		listOfLists.add(list1);
 		listOfLists.add(list2);
-		System.out.println(listOfLists);
 		return listOfLists;
 	}
 }
