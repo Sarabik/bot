@@ -1,1 +1,0 @@
-worker: sh target/classes/lv/boardgame/bot/BotApplication
