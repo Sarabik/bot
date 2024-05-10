@@ -1,12 +1,12 @@
 package lv.boardgame.bot.commands.messageCommand;
 
-import lombok.AllArgsConstructor;
 import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import lv.boardgame.bot.service.GameSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import static lv.boardgame.bot.TextFinals.*;
@@ -18,14 +18,30 @@ import static lv.boardgame.bot.messages.MessageUtil.convertGameSessionToString;
 import static lv.boardgame.bot.messages.MessageUtil.getCustomMessage;
 
 @Component
-@AllArgsConstructor
 public class WaitingComment implements MessageCommand {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
 
-	private GameSessionConstructor gameSessionConstructor;
+	private final GameSessionConstructor gameSessionConstructor;
 
-	private GameSessionService gameSessionService;
+	private final GameSessionService gameSessionService;
+
+	@Value("${telegram.groupId}")
+	private String groupId;
+
+	@Value("${telegram.group2Id}")
+	private String group2Id;
+
+	@Value("${telegram.bot.username}")
+	private String botUsername;
+
+	private WaitingComment(
+		final GameSessionConstructor gameSessionConstructor,
+		final GameSessionService gameSessionService
+	) {
+		this.gameSessionConstructor = gameSessionConstructor;
+		this.gameSessionService = gameSessionService;
+	}
 
 	@Override
 	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
@@ -33,14 +49,26 @@ public class WaitingComment implements MessageCommand {
 		gameSessionConstructor.setComment(username, receivedText);
 		GameSession savedGameSession = gameSessionConstructor.getGameSession(username);
 		LOG.info("{} -> Game session saved: {}", username, savedGameSession);
-		messageList.add(savingTable(chatId, savedGameSession));
+		messageList.addAll(savingTable(chatId, savedGameSession));
 		gameSessionConstructor.clear(username);
 		return messageList;
 	}
 
-	public SendMessage savingTable(final String chatIdString, final GameSession gameSession) {
+	public List<SendMessage> savingTable(final String chatIdString, final GameSession gameSession) {
+		List<SendMessage> list = new ArrayList<>();
 		GameSession gmSession = gameSessionService.saveNewGameSession(gameSession);
 		String str = GAME_SESSION_CREATED + System.lineSeparator() + convertGameSessionToString(gmSession);
-		return getCustomMessage(chatIdString, str);
+		list.add(getCustomMessage(chatIdString, str));
+		/*list.add(getMessageForGroup(str, groupId));*/
+		list.add(getMessageForGroup(str, group2Id));
+		return list;
+	}
+
+	private SendMessage getMessageForGroup(String str, String groupId) {
+		String botPrivateChatUrl = "<b><a href='https://t.me/" + botUsername + "'>ПЕРЕЙТИ В БОТ</a></b>";
+		return getCustomMessage(groupId, str +
+			System.lineSeparator() +
+			System.lineSeparator() +
+			botPrivateChatUrl);
 	}
 }
