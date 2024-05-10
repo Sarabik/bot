@@ -2,6 +2,7 @@ package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.service.GameSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import static lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil.g
 import static lv.boardgame.bot.messages.MessageUtil.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -27,7 +29,13 @@ public class GameSessionLeavedCallback implements CallbackQueryCommand {
 	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
 		List<SendMessage> messageList = getStartList(chatId, data);
 		GameSession gameSession = getGameSession(message, gameSessionService);
-		gameSession.getPlayers().remove(username);
+		Set<Player> players = gameSession.getPlayers();
+		Player player = players
+			.stream()
+			.filter(s -> s.getUsername().equals(username))
+			.findFirst()
+			.get();
+		players.remove(player);
 		gameSession = gameSessionService.updateGameSession(gameSession);
 		LOG.info("{} -> Leaved game session: {}", username, gameSession);
 		messageList.add(getEditedSession(chatId, gameSession));
