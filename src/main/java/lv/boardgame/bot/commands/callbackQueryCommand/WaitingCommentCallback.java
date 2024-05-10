@@ -29,6 +29,9 @@ public class WaitingCommentCallback implements CallbackQueryCommand {
 	@Value("${telegram.groupId}")
 	private String groupId;
 
+	@Value("${telegram.group2Id}")
+	private String group2Id;
+
 	@Value("${telegram.bot.username}")
 	private String botUsername;
 
@@ -55,11 +58,16 @@ public class WaitingCommentCallback implements CallbackQueryCommand {
 		String str = GAME_SESSION_CREATED + System.lineSeparator() + convertGameSessionToString(gmSession);
 		List<SendMessage> list = new ArrayList<>();
 		list.add(getCustomMessage(chatIdString, str));
-		String botPrivateChatUrl = "<b><a href='https://t.me/" + botUsername + "'>ПЕРЕЙТИ В БОТ</a></b>";
-		list.add(getCustomMessage(groupId, str +
-			System.lineSeparator() +
-			System.lineSeparator() +
-			botPrivateChatUrl));
+		list.add(getMessageForGroup(str, groupId));
+		list.add(getMessageForGroup(str, group2Id));
 		return list;
+	}
+
+	private SendMessage getMessageForGroup(String str, String groupId) {
+		String botPrivateChatUrl = "<b><a href='https://t.me/" + botUsername + "'>ПЕРЕЙТИ В БОТ</a></b>";
+		return getCustomMessage(groupId, str +
+			System.lineSeparator() +
+			System.lineSeparator() +
+			botPrivateChatUrl);
 	}
 }
