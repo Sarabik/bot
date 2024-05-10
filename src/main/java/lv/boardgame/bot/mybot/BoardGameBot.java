@@ -52,7 +52,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 	public void onUpdateReceived(final Update update) {
 		List<SendMessage> messageList = new ArrayList<>();
 
-		if(update.hasMessage()){
+		if(update.hasMessage() && update.getMessage().getChat().isUserChat()){
 			Message receivedMessage = update.getMessage();
 			String username = receivedMessage.getFrom().getUserName();
 			String chatIdString = String.valueOf(receivedMessage.getChatId());
