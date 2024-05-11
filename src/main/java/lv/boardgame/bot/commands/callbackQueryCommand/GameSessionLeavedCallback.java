@@ -10,12 +10,13 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import static lv.boardgame.bot.TextFinals.PLAYER_JOINED_YOUR_GAME_SESSION;
+import static lv.boardgame.bot.TextFinals.PLAYER_LEAVED_YOUR_GAME_SESSION;
 import static lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil.getGameSession;
 import static lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil.getStartList;
 import static lv.boardgame.bot.messages.MessageUtil.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -26,19 +27,17 @@ public class GameSessionLeavedCallback implements CallbackQueryCommand {
 	private final GameSessionService gameSessionService;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String data, final Message message) {
 		List<SendMessage> messageList = getStartList(chatId, data);
 		GameSession gameSession = getGameSession(message, gameSessionService);
-		Set<Player> players = gameSession.getPlayers();
-		Player player = players
-			.stream()
-			.filter(s -> s.getUsername().equals(username))
-			.findFirst()
-			.get();
-		players.remove(player);
+		gameSession.getPlayers().remove(player);
 		gameSession = gameSessionService.updateGameSession(gameSession);
-		LOG.info("{} -> Leaved game session: {}", username, gameSession);
+		LOG.info("{} -> Leaved game session: {}", player, gameSession);
 		messageList.add(getEditedSession(chatId, gameSession));
+		/*message to organizer*/
+		String organizerChatId = gameSession.getOrganizer().getChatId();
+		messageList.add(getCustomMessage(organizerChatId, PLAYER_LEAVED_YOUR_GAME_SESSION + getPlayerNameString(player)));
+		messageList.add(getEditedSession(organizerChatId, gameSession));
 		return messageList;
 	}
 }

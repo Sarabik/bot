@@ -3,6 +3,7 @@ package lv.boardgame.bot.commands.messageCommand;
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil;
 import lv.boardgame.bot.inlineKeyboard.DateInlineKeyboardMarkup;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,9 +22,9 @@ public class OrganizeGameSession implements MessageCommand {
 	private DateInlineKeyboardMarkup dateInlineKeyboardMarkup;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
 		List<SendMessage> messageList = CallbackQueryUtil.getStartList(chatId, START);
-		gameSessionConstructor.start(chatId, username);
+		gameSessionConstructor.start(chatId, player);
 		messageList.add(getCustomMessageWithMarkup(chatId, DATA, dateInlineKeyboardMarkup));
 		return messageList;
 	}

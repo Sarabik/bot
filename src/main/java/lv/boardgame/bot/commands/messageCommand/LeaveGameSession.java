@@ -25,20 +25,20 @@ public class LeaveGameSession implements MessageCommand {
 	private LeaveGameInlineKeyboardMarkup leaveGameInlineKeyboardMarkup;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		gameSessionConstructor.clear(username);
+		gameSessionConstructor.clear(player);
 		messageList.add(getCustomMessage(chatId, SESSION_TO_LEAVE));
-		messageList.addAll(getAllTablesToLeave(chatId, username));
+		messageList.addAll(getAllTablesToLeave(chatId, player));
 		return messageList;
 	}
 
-	public List<SendMessage> getAllTablesToLeave (final String chatIdString, final String username) {
+	public List<SendMessage> getAllTablesToLeave (final String chatIdString, final Player player) {
 		gameSessionService.deleteOutdatedGameSessions();
 		List<GameSession> gameSessionList = gameSessionService.findAllGameSessions();
 		List<GameSession> gameSessionToLeave = gameSessionList.stream()
-			.filter(s -> (!username.equals(s.getOrganizer().getUsername()) &&
-				s.getPlayers().stream().map(Player::getUsername).toList().contains(username)))
+			.filter(s -> (!player.equals(s.getOrganizer()) &&
+				s.getPlayers().contains(player)))
 			.toList();
 		if (gameSessionToLeave.isEmpty()) {
 			return List.of(getCustomMessage(chatIdString, DONT_JOIN));

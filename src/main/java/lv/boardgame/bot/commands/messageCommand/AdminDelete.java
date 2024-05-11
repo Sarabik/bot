@@ -1,5 +1,6 @@
 package lv.boardgame.bot.commands.messageCommand;
 
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.service.AdminService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,8 +25,8 @@ public class AdminDelete implements MessageCommand {
 	}
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
-		if (!superAdmin.equals(username)) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
+		if (!superAdmin.equals(player.getUsername())) {
 			return List.of(getCustomMessage(chatId, NO_ADMIN_ACCESS));
 		}
 		String adminUsername = receivedText.split(" ")[1];

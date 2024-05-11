@@ -1,6 +1,7 @@
 package lv.boardgame.bot.commands.messageCommand;
 
 import lombok.AllArgsConstructor;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,9 +19,9 @@ public class WaitingPlace implements MessageCommand {
 	private GameSessionConstructor gameSessionConstructor;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		gameSessionConstructor.setPlace(username,receivedText);
+		gameSessionConstructor.setPlace(player, receivedText);
 		messageList.add(getCustomMessage(chatId, GAME_NAME));
 		return messageList;
 	}

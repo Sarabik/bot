@@ -3,6 +3,7 @@ package lv.boardgame.bot.commands.callbackQueryCommand;
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.inlineKeyboard.MaxPlayerCountInlineKeyboardMarkup;
 import lv.boardgame.bot.inlineKeyboard.NoCommentInlineKeyboardMarkup;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -25,12 +26,12 @@ public class WaitingMaxPlayerCountCallback implements CallbackQueryCommand {
 	private final GameSessionConstructor gameSessionConstructor;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String data, final Message message) {
 		List<SendMessage> messageList = getStartList(chatId, data);
 		if (CHOSE_MAX_PLAYER_COUNT.equals(data)) {
 			messageList.add(getCustomMessageWithMarkup(chatId, MAX_PLAYER_COUNT, maxPlayerCountInlineKeyboardMarkup));
 		} else {
-			gameSessionConstructor.setMaxPlayerCount(username, data);
+			gameSessionConstructor.setMaxPlayerCount(player, data);
 			messageList.add(getCustomMessageWithMarkup(chatId, WRITE_COMMENT, noCommentInlineKeyboardMarkup));
 		}
 		return messageList;

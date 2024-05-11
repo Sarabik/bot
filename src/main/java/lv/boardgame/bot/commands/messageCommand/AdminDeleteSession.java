@@ -3,6 +3,7 @@ package lv.boardgame.bot.commands.messageCommand;
 import lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil;
 import lv.boardgame.bot.inlineKeyboard.DeleteGameInlineKeyboardMarkup;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.service.AdminService;
 import lv.boardgame.bot.service.GameSessionService;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,20 +38,20 @@ public class AdminDeleteSession implements MessageCommand {
 	}
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
-		if (!(ifUserIsAdmin(username) || superAdmin.equals(username))) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
+		if (!(ifUserIsAdmin(player) || superAdmin.equals(player.getUsername()))) {
 			return List.of(getCustomMessage(chatId, NO_ADMIN_ACCESS));
 		}
 		List<SendMessage> messageList = CallbackQueryUtil.getStartList(chatId, SESSION_TO_DELETE);
-		messageList.addAll(getAllSessionsToDelete(chatId, username));
+		messageList.addAll(getAllSessionsToDelete(chatId));
 		return messageList;
 	}
 
-	private boolean ifUserIsAdmin(String username) {
-		return adminService.findAllAdminUsernameList().contains(username);
+	private boolean ifUserIsAdmin(Player player) {
+		return adminService.findAllAdminUsernameList().contains(player.getUsername());
 	}
 
-	public List<SendMessage> getAllSessionsToDelete (final String chatIdString, final String username) {
+	public List<SendMessage> getAllSessionsToDelete (final String chatIdString) {
 		List<GameSession> gameSessionList = gameSessionService.findAllGameSessions();
 		return getListOfMessages(gameSessionList, deleteGameInlineKeyboardMarkup, chatIdString);
 	}

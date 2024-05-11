@@ -6,6 +6,7 @@ import lv.boardgame.bot.commands.AllMessageCommands;
 import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.messages.MenuMessage;
 import lv.boardgame.bot.model.BotState;
+import lv.boardgame.bot.model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -54,23 +56,26 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 		if(update.hasMessage() && update.getMessage().getChat().isUserChat()){
 			Message receivedMessage = update.getMessage();
-			String username = receivedMessage.getFrom().getUserName();
+/*			String username = receivedMessage.getFrom().getUserName();
+			String firstName = receivedMessage.getFrom().getFirstName();
+			String lastName = receivedMessage.getFrom().getLastName();*/
 			String chatIdString = String.valueOf(receivedMessage.getChatId());
-			BotState botState = gameSessionConstructor.getBotState(username);
+			Player player = getPlayer(chatIdString, receivedMessage.getFrom());
+			BotState botState = gameSessionConstructor.getBotState(player);
 
 			if(receivedMessage.hasText()){
 				String receivedText = receivedMessage.getText();
 
 				if (allMessageCommands.ifContainsKey(receivedText)) {
 					messageList = allMessageCommands
-						.getCommand(receivedText).execute(chatIdString, username, receivedText);
+						.getCommand(receivedText).execute(chatIdString, player, receivedText);
 				} else if (botState != null && allMessageCommands.ifContainsKey(botState.toString())) {
 					messageList = allMessageCommands
-						.getCommand(botState.toString()).execute(chatIdString, username, receivedText);
+						.getCommand(botState.toString()).execute(chatIdString, player, receivedText);
 				} else if (allAdminCommands.ifContainsKey(receivedText.split(" ")[0])) {
 					messageList = allAdminCommands
 						.getCommand(receivedText.split(" ")[0])
-						.execute(chatIdString, username, receivedText);
+						.execute(chatIdString, player, receivedText);
 				} else {
 					messageList.add(menuMessage.getMenuMessage(chatIdString));
 				}
@@ -79,19 +84,20 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		} else if (update.hasCallbackQuery()) {
 			CallbackQuery callbackQuery = update.getCallbackQuery();
 			String data = callbackQuery.getData();
-			String username = callbackQuery.getFrom().getUserName();
+/*			String username = callbackQuery.getFrom().getUserName();*/
 			int messageId = callbackQuery.getMessage().getMessageId();
 			Message callbackQueryMessage = callbackQuery.getMessage();
 			long chatId = callbackQuery.getMessage().getChatId();
 			String chatIdString = String.valueOf(chatId);
-			BotState botState = gameSessionConstructor.getBotState(username);
+			Player player = getPlayer(chatIdString, callbackQuery.getFrom());
+			BotState botState = gameSessionConstructor.getBotState(player);
 
 			if (botState != null && allCallbackQueryCommands.ifContainsKey(botState.toString())) {
 				messageList = allCallbackQueryCommands.getCommand(botState.toString())
-					.execute(chatIdString, username, data, callbackQueryMessage);
+					.execute(chatIdString, player, data, callbackQueryMessage);
 			} else if (allCallbackQueryCommands.ifContainsKey(data)) {
 				messageList = allCallbackQueryCommands.getCommand(data)
-					.execute(chatIdString, username, data, callbackQueryMessage);
+					.execute(chatIdString, player, data, callbackQueryMessage);
 			} else {
 				messageList.add(menuMessage.getMenuMessage(chatIdString));
 			}
@@ -129,5 +135,9 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		} catch (TelegramApiException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Player getPlayer(String chatId, User user) {
+		return new Player(chatId, user.getUserName(), user.getFirstName(), user.getLastName());
 	}
 }

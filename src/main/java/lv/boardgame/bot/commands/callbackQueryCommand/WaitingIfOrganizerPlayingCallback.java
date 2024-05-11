@@ -2,6 +2,7 @@ package lv.boardgame.bot.commands.callbackQueryCommand;
 
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.inlineKeyboard.MaxPlayerCountInlineKeyboardMarkup;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,7 +22,7 @@ public class WaitingIfOrganizerPlayingCallback implements CallbackQueryCommand {
 	private final GameSessionConstructor gameSessionConstructor;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String data, final Message message) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String data, final Message message) {
 		List<SendMessage> messageList = new ArrayList<>();
 		if ("true".equals(data)) {
 			messageList.add(getCustomMessage(chatId, PLAYING));
@@ -29,7 +30,7 @@ public class WaitingIfOrganizerPlayingCallback implements CallbackQueryCommand {
 			messageList.add(getCustomMessage(chatId, NOT_PLAYING));
 		}
 
-		gameSessionConstructor.setIfOrganizerPlaying(username, data);
+		gameSessionConstructor.setIfOrganizerPlaying(player, data);
 		messageList.add(getCustomMessageWithMarkup(chatId, MAX_PLAYER_COUNT, maxPlayerCountInlineKeyboardMarkup));
 		return messageList;
 	}

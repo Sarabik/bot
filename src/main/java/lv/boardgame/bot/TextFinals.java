@@ -72,6 +72,8 @@ public class TextFinals {
 
 	public final static String JOINED_SESSION = "ВЫ ПРИСОЕДИНИЛИСЬ К ВСТРЕЧЕ:";
 
+	public final static String PLAYER_JOINED_YOUR_GAME_SESSION = "К ВАШЕЙ ИГРОВОЙ ВСТРЕЧЕ ПРИСОЕДИНИЛСЯ ИГРОК: ";
+
 	/*LeaveGameSession*/
 
 	public final static String SESSION_TO_LEAVE = "<b>Укажите от участия в какой игровой встрече вы хотели бы отписаться</b>";
@@ -81,6 +83,8 @@ public class TextFinals {
 	public final static String LEAVE_SESSION = "Отписаться";
 
 	public final static String SESSION_LEAVED = "ВЫ ОТПИСАЛИСЬ ОТ ИГРОВОЙ ВСТРЕЧИ:";
+
+	public final static String PLAYER_LEAVED_YOUR_GAME_SESSION = "ВАШУ ИГРОВУЮ ВСТРЕЧУ ПОКИНУЛ ИГРОК: ";
 
 	/*DeleteGameSession*/
 

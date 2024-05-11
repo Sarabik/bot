@@ -25,21 +25,21 @@ public class JoinGameSession implements MessageCommand {
 	private JoinGameInlineKeyboardMarkup joinGameInlineKeyboardMarkup;
 
 	@Override
-	public List<SendMessage> execute(final String chatId, final String username, final String receivedText) {
+	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
 		List<SendMessage> messageList = new ArrayList<>();
-		gameSessionConstructor.clear(username);
+		gameSessionConstructor.clear(player);
 		messageList.add(getCustomMessage(chatId, SESSIONS_TO_JOIN));
-		messageList.addAll(getAllTablesToJoin(chatId, username));
+		messageList.addAll(getAllTablesToJoin(chatId, player));
 		return messageList;
 	}
 
-	public List<SendMessage> getAllTablesToJoin (final String chatIdString, final String username) {
+	public List<SendMessage> getAllTablesToJoin (final String chatIdString, final Player player) {
 		gameSessionService.deleteOutdatedGameSessions();
 
 		List<GameSession> gameSessionList = gameSessionService.findAllGameSessions();
 		List<GameSession> gameSessionToJoin = gameSessionList.stream()
-			.filter(s -> !(username.equals(s.getOrganizer().getUsername()) ||
-					s.getPlayers().stream().map(Player::getUsername).toList().contains(username))
+			.filter(s -> !(player.equals(s.getOrganizer()) ||
+					s.getPlayers().contains(player))
 				&& s.getMaxPlayerCount() - s.getPlayers().size() > 0)
 			.toList();
 		if (gameSessionToJoin.isEmpty()) {

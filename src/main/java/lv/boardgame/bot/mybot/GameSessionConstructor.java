@@ -24,98 +24,98 @@ public class GameSessionConstructor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
 
-	private final Map<String, GameSessionBotStatePair> constructorMap = new HashMap<>();
+	private final Map<Player, GameSessionBotStatePair> constructorMap = new HashMap<>();
 
-	public GameSession getGameSession(String username) {
-		return getGameSessionByUsername(username).getGameSession();
+	public GameSession getGameSession(Player player) {
+		return getGameSessionBotStatePairByPlayer(player).getGameSession();
 	}
 
-	private GameSessionBotStatePair getGameSessionByUsername(String username) {
-		return constructorMap.get(username);
+	private GameSessionBotStatePair getGameSessionBotStatePairByPlayer(Player player) {
+		return constructorMap.get(player);
 	}
 
-	public BotState getBotState(String username) {
-		if (constructorMap.containsKey(username)) {
-			BotState botState = getGameSessionByUsername(username).getBotState();
-			LOG.info("{} -> Current bot state: {}", username, botState);
+	public BotState getBotState(Player player) {
+		if (constructorMap.containsKey(player)) {
+			BotState botState = getGameSessionBotStatePairByPlayer(player).getBotState();
+			LOG.info("{} -> Current bot state: {}", player, botState);
 			return botState;
 		} else {
-			LOG.info("{} -> There is no active bot state", username);
+			LOG.info("{} -> There is no active bot state", player);
 			return null;
 		}
 	}
 
-	public void clear(String username) {
-		LOG.info("{} -> Session constructor cleared", username);
-		constructorMap.remove(username);
+	public void clear(Player player) {
+		constructorMap.remove(player);
+		LOG.info("{} -> Session constructor cleared", player);
 	}
 
-	public void start(String chatId, String username) {
-		LOG.info("{} -> New session creation is started", username);
+	public void start(String chatId, Player player) {
+		LOG.info("{} -> New session creation is started", player);
 		GameSession gs = new GameSession();
-		gs.setOrganizer(new Player(chatId, username));
-		constructorMap.put(username, new GameSessionBotStatePair(gs, BotState.WAITING_DATE));
-		LOG.info("{} -> Bot state is changed to WAITING_DATE", username);
+		gs.setOrganizer(player);
+		constructorMap.put(player, new GameSessionBotStatePair(gs, BotState.WAITING_DATE));
+		LOG.info("{} -> Bot state is changed to WAITING_DATE", player);
 	}
 
-	public void setDate(String username, String dateString) {
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+	public void setDate(Player player, String dateString) {
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		LocalDate date = LocalDate.parse(dateString, DATE_FORMATTER);
 		LocalTime time = LocalTime.of(0,0, 0);
 		LocalDateTime dateTime = LocalDateTime.of(date, time);
 		pair.getGameSession().setDate(dateTime);
-		LOG.info("{} -> Added game session date: {}", username, date);
+		LOG.info("{} -> Added game session date: {}", player, date);
 		pair.setBotState(BotState.WAITING_TIME);
-		LOG.info("{} -> Bot state is changed to WAITING_TIME", username);
+		LOG.info("{} -> Bot state is changed to WAITING_TIME", player);
 	}
 
-	public void setTime(String username, String timeString) {
+	public void setTime(Player player, String timeString) {
 		LocalTime time = LocalTime.parse(timeString, TIME_FORMATTER);
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		LocalDateTime dateTime = pair.getGameSession().getDate();
 		pair.getGameSession().setDate(dateTime.toLocalDate().atTime(time));
-		LOG.info("{} -> Added game session time: {}", username, time);
+		LOG.info("{} -> Added game session time: {}", player, time);
 		pair.setBotState(BotState.WAITING_PLACE);
-		LOG.info("{} -> Bot state is changed to WAITING_PLACE", username);
+		LOG.info("{} -> Bot state is changed to WAITING_PLACE", player);
 	}
 
-	public void setIfOrganizerPlaying(String username, String ifOrganizerPlaying) {
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+	public void setIfOrganizerPlaying(Player player, String ifOrganizerPlaying) {
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		boolean ifPlaying = Boolean.parseBoolean(ifOrganizerPlaying);
 		pair.getGameSession().setOrganizerPlaying(ifPlaying);
-		LOG.info("{} -> Organizer will play: {}", username, ifPlaying);
+		LOG.info("{} -> Organizer will play: {}", player, ifPlaying);
 		pair.setBotState(BotState.WAITING_MAX_PLAYER_COUNT);
-		LOG.info("{} -> Bot state is changed to WAITING_MAX_PLAYER_COUNT", username);
+		LOG.info("{} -> Bot state is changed to WAITING_MAX_PLAYER_COUNT", player);
 	}
 
-	public void setPlace(String username, String place) {
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+	public void setPlace(Player player, String place) {
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		pair.getGameSession().setPlace(place);
-		LOG.info("{} -> Added game session place: {}", username, place);
+		LOG.info("{} -> Added game session place: {}", player, place);
 		pair.setBotState(BotState.WAITING_GAME_NAME);
-		LOG.info("{} -> Bot state is changed to WAITING_GAME_NAME", username);
+		LOG.info("{} -> Bot state is changed to WAITING_GAME_NAME", player);
 	}
 
-	public void setGameName(String username, String gameName) {
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+	public void setGameName(Player player, String gameName) {
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		pair.getGameSession().setGameName(gameName);
-		LOG.info("{} -> Added game name: {}", username, gameName);
+		LOG.info("{} -> Added game name: {}", player, gameName);
 		pair.setBotState(BotState.WAITING_IF_ORGANIZER_PLAYING);
-		LOG.info("{} -> Bot state is changed to WAITING_IF_ORGANIZER_PLAYING", username);
+		LOG.info("{} -> Bot state is changed to WAITING_IF_ORGANIZER_PLAYING", player);
 	}
 
-	public void setComment(String username, String comment) {
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+	public void setComment(Player player, String comment) {
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		pair.getGameSession().setComment(comment);
-		LOG.info("{} -> Added comment for game session: {}", username, comment);
+		LOG.info("{} -> Added comment for game session: {}", player, comment);
 	}
 
-	public void setMaxPlayerCount(String username, String count) {
-		GameSessionBotStatePair pair = getGameSessionByUsername(username);
+	public void setMaxPlayerCount(Player player, String count) {
+		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		pair.getGameSession().setMaxPlayerCount(Integer.parseInt(count));
-		LOG.info("{} -> Added game session max player count: {}", username, count);
+		LOG.info("{} -> Added game session max player count: {}", player, count);
 		pair.setBotState(BotState.WAITING_COMMENT);
-		LOG.info("{} -> Bot state is changed to WAITING_COMMENT", username);
+		LOG.info("{} -> Bot state is changed to WAITING_COMMENT", player);
 	}
 
 	@Data
