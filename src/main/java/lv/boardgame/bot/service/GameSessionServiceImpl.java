@@ -73,6 +73,18 @@ public class GameSessionServiceImpl implements GameSessionService {
 	}
 
 	@Override
+	public GameSession findGameSessionByDatePlaceAndGame(
+		final LocalDateTime date,
+		final String place,
+		final String game
+	) {
+		Optional<GameSession> opt = findAllGameSessions().stream()
+			.filter(s -> date.equals(s.getDate()) && place.equals(s.getPlace()) && game.equals(s.getGameName()))
+			.findFirst();
+		return opt.orElse(null);
+	}
+
+	@Override
 	public GameSession findGameSessionByDateAndOrganizer(LocalDateTime date, String organizer) {
 		Optional<GameSession> opt;
 		if (organizer.startsWith("@")) {

@@ -14,17 +14,14 @@ import static lv.boardgame.bot.TextFinals.DATE_TIME_FORMATTER;
 
 public class MessageUtil {
 
-	@Value("${telegram.bot.username}")
-	private static String botUsername;
-
-	@Value("${telegram.groupId}")
-	private static String group1Id;
-
-	private static List<String> getGroupList() {
-		return List.of(group1Id);
+	private static List<String> getGroupList(String groupIds) {
+		String[] array = groupIds.split(" ");
+		List<String> list = new ArrayList<>(List.of(array));
+		System.out.println(list);
+		return list;
 	}
 
-	private static SendMessage getMessageForGroup(String str, String groupId) {
+	private static SendMessage getMessageForGroup(String str, String groupId, String botUsername) {
 		String botPrivateChatUrl = "<b><a href='https://t.me/" + botUsername + "'>ПЕРЕЙТИ В БОТ</a></b>";
 		return getCustomMessage(groupId, str +
 			System.lineSeparator() +
@@ -32,10 +29,10 @@ public class MessageUtil {
 			botPrivateChatUrl);
 	}
 
-	public static List<SendMessage> getGroupSendMessages(String str) {
+	public static List<SendMessage> getGroupSendMessages(String str, String groupIds, String botUsername) {
 		List<SendMessage> list = new ArrayList<>();
-		for (String groupId : getGroupList()) {
-			list.add(getMessageForGroup(str, groupId));
+		for (String groupId : getGroupList(groupIds)) {
+			list.add(getMessageForGroup(str, groupId, botUsername));
 		}
 		return list;
 	}

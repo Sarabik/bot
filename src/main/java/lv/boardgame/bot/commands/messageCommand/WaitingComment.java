@@ -7,6 +7,7 @@ import lv.boardgame.bot.mybot.GameSessionConstructor;
 import lv.boardgame.bot.service.GameSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import static lv.boardgame.bot.TextFinals.*;
@@ -20,6 +21,12 @@ import static lv.boardgame.bot.messages.MessageUtil.getGroupSendMessages;
 
 @Component
 public class WaitingComment implements MessageCommand {
+
+	@Value("${telegram.bot.username}")
+	private String botUsername;
+
+	@Value("${telegram.groupIds}")
+	private String groupIds;
 
 	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
 
@@ -51,7 +58,7 @@ public class WaitingComment implements MessageCommand {
 		GameSession gmSession = gameSessionService.saveNewGameSession(gameSession);
 		String str = GAME_SESSION_CREATED + System.lineSeparator() + convertGameSessionToString(gmSession);
 		list.add(getCustomMessage(chatIdString, str));
-		list.addAll(getGroupSendMessages(str));
+		list.addAll(getGroupSendMessages(str, groupIds, botUsername));
 		return list;
 	}
 }

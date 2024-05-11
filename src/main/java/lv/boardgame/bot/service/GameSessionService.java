@@ -25,4 +25,6 @@ public interface GameSessionService {
 
 	void deleteOutdatedGameSessions();
 
+	GameSession findGameSessionByDatePlaceAndGame(LocalDateTime dateTime, String place, String game);
+
 }

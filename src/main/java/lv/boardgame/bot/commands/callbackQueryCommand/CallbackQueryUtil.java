@@ -4,6 +4,7 @@ import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.service.GameSessionService;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,9 +17,10 @@ public class CallbackQueryUtil {
 
 	public static GameSession getGameSession(Message message, GameSessionService gameSessionService) {
 		String date = message.getEntities().get(1).getText();
-		String organizer = message.getEntities().get(8).getText();
+		String place = message.getEntities().get(3).getText();
+		String game = message.getEntities().get(5).getText();
 		LocalDateTime dateTime = LocalDateTime.parse(date, DATE_TIME_FORMATTER);
-		return gameSessionService.findGameSessionByDateAndOrganizer(dateTime, organizer);
+		return gameSessionService.findGameSessionByDatePlaceAndGame(dateTime, place, game);
 	}
 
 	public static List<SendMessage> getStartList(String chatId, String data) {
