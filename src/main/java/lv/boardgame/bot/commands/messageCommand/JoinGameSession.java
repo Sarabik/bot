@@ -40,7 +40,7 @@ public class JoinGameSession implements MessageCommand {
 		List<GameSession> gameSessionToJoin = gameSessionList.stream()
 			.filter(s -> !(player.equals(s.getOrganizer()) ||
 					s.getPlayers().contains(player))
-				&& s.getMaxPlayerCount() - s.getPlayers().size() > 0)
+				&& s.getFreePlayerSlots() - s.getPlayers().size() > 0)
 			.toList();
 		if (gameSessionToJoin.isEmpty()) {
 			return List.of(getCustomMessage(chatIdString, NO_SESSIONS_TO_JOIN));

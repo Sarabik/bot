@@ -16,8 +16,7 @@ public class CallbackQueryUtil {
 
 	public static GameSession getGameSession(Message message, GameSessionService gameSessionService) {
 		String date = message.getEntities().get(1).getText();
-		String organizer = message.getEntities().get(8).getText().substring(1);
-
+		String organizer = message.getEntities().get(8).getText();
 		LocalDateTime dateTime = LocalDateTime.parse(date, DATE_TIME_FORMATTER);
 		return gameSessionService.findGameSessionByDateAndOrganizer(dateTime, organizer);
 	}

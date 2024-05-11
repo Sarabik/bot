@@ -9,7 +9,7 @@ import lv.boardgame.bot.commands.messageCommand.OrganizeGameSession;
 import lv.boardgame.bot.commands.messageCommand.WaitingComment;
 import lv.boardgame.bot.commands.messageCommand.WaitingDate;
 import lv.boardgame.bot.commands.messageCommand.WaitingGameName;
-import lv.boardgame.bot.commands.messageCommand.WaitingMaxPlayerCount;
+import lv.boardgame.bot.commands.messageCommand.WaitingFreePlayerSlots;
 import lv.boardgame.bot.commands.messageCommand.WaitingPlace;
 import lv.boardgame.bot.commands.messageCommand.WaitingTime;
 import lv.boardgame.bot.model.BotState;
@@ -35,7 +35,7 @@ public class AllMessageCommands {
 		final WaitingTime waitingTime,
 		final WaitingPlace waitingPlace,
 		final WaitingGameName waitingGameName,
-		final WaitingMaxPlayerCount waitingMaxPlayerCount,
+		final WaitingFreePlayerSlots waitingFreePlayerSlots,
 		final WaitingComment waitingComment
 	) {
 		commands = new HashMap<>();
@@ -48,7 +48,7 @@ public class AllMessageCommands {
 		commands.put(BotState.WAITING_TIME.toString(), waitingTime);
 		commands.put(BotState.WAITING_PLACE.toString(), waitingPlace);
 		commands.put(BotState.WAITING_GAME_NAME.toString(), waitingGameName);
-		commands.put(BotState.WAITING_MAX_PLAYER_COUNT.toString(), waitingMaxPlayerCount);
+		commands.put(BotState.WAITING_FREE_PLAYER_SLOTS.toString(), waitingFreePlayerSlots);
 		commands.put(BotState.WAITING_COMMENT.toString(), waitingComment);
 	}
 

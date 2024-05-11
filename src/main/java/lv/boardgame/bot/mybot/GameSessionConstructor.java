@@ -79,15 +79,6 @@ public class GameSessionConstructor {
 		LOG.info("{} -> Bot state is changed to WAITING_PLACE", player);
 	}
 
-	public void setIfOrganizerPlaying(Player player, String ifOrganizerPlaying) {
-		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
-		boolean ifPlaying = Boolean.parseBoolean(ifOrganizerPlaying);
-		pair.getGameSession().setOrganizerPlaying(ifPlaying);
-		LOG.info("{} -> Organizer will play: {}", player, ifPlaying);
-		pair.setBotState(BotState.WAITING_MAX_PLAYER_COUNT);
-		LOG.info("{} -> Bot state is changed to WAITING_MAX_PLAYER_COUNT", player);
-	}
-
 	public void setPlace(Player player, String place) {
 		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		pair.getGameSession().setPlace(place);
@@ -100,8 +91,8 @@ public class GameSessionConstructor {
 		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
 		pair.getGameSession().setGameName(gameName);
 		LOG.info("{} -> Added game name: {}", player, gameName);
-		pair.setBotState(BotState.WAITING_IF_ORGANIZER_PLAYING);
-		LOG.info("{} -> Bot state is changed to WAITING_IF_ORGANIZER_PLAYING", player);
+		pair.setBotState(BotState.WAITING_FREE_PLAYER_SLOTS);
+		LOG.info("{} -> Bot state is changed to WAITING_MAX_PLAYER_COUNT", player);
 	}
 
 	public void setComment(Player player, String comment) {
@@ -110,10 +101,10 @@ public class GameSessionConstructor {
 		LOG.info("{} -> Added comment for game session: {}", player, comment);
 	}
 
-	public void setMaxPlayerCount(Player player, String count) {
+	public void setFreePlayerSlots(Player player, String count) {
 		GameSessionBotStatePair pair = getGameSessionBotStatePairByPlayer(player);
-		pair.getGameSession().setMaxPlayerCount(Integer.parseInt(count));
-		LOG.info("{} -> Added game session max player count: {}", player, count);
+		pair.getGameSession().setFreePlayerSlots(Integer.parseInt(count));
+		LOG.info("{} -> Added game session free player slot count: {}", player, count);
 		pair.setBotState(BotState.WAITING_COMMENT);
 		LOG.info("{} -> Bot state is changed to WAITING_COMMENT", player);
 	}

@@ -56,9 +56,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 
 		if(update.hasMessage() && update.getMessage().getChat().isUserChat()){
 			Message receivedMessage = update.getMessage();
-/*			String username = receivedMessage.getFrom().getUserName();
-			String firstName = receivedMessage.getFrom().getFirstName();
-			String lastName = receivedMessage.getFrom().getLastName();*/
 			String chatIdString = String.valueOf(receivedMessage.getChatId());
 			Player player = getPlayer(chatIdString, receivedMessage.getFrom());
 			BotState botState = gameSessionConstructor.getBotState(player);
@@ -84,7 +81,6 @@ public class BoardGameBot extends TelegramLongPollingBot {
 		} else if (update.hasCallbackQuery()) {
 			CallbackQuery callbackQuery = update.getCallbackQuery();
 			String data = callbackQuery.getData();
-/*			String username = callbackQuery.getFrom().getUserName();*/
 			int messageId = callbackQuery.getMessage().getMessageId();
 			Message callbackQueryMessage = callbackQuery.getMessage();
 			long chatId = callbackQuery.getMessage().getChatId();

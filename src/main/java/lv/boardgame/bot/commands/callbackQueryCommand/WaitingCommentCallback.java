@@ -47,8 +47,7 @@ public class WaitingCommentCallback implements CallbackQueryCommand {
 		GameSession gmSession = gameSessionService.saveNewGameSession(gameSession);
 		LOG.info("{} -> Game session saved: {}", player, gmSession);
 		String str = GAME_SESSION_CREATED + System.lineSeparator() + convertGameSessionToString(gmSession);
-		List<SendMessage> list = new ArrayList<>();
-		list.add(getCustomMessage(chatIdString, str));
+		List<SendMessage> list = getStartList(chatIdString, str);
 		list.addAll(getGroupSendMessages(str));
 		return list;
 	}

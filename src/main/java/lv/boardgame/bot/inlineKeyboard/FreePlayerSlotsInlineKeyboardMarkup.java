@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MaxPlayerCountInlineKeyboardMarkup extends InlineKeyboardMarkup {
+public class FreePlayerSlotsInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
-	public MaxPlayerCountInlineKeyboardMarkup() {
+	public FreePlayerSlotsInlineKeyboardMarkup() {
 		this.setKeyboard(getMaxPlayerCount());
 	}
 

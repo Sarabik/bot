@@ -3,6 +3,7 @@ package lv.boardgame.bot.service;
 import lombok.AllArgsConstructor;
 import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.repository.GameSessionRepository;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -24,9 +25,6 @@ public class GameSessionServiceImpl implements GameSessionService {
 
 	@Override
 	public GameSession saveNewGameSession(final GameSession gameSession) {
-		if (gameSession.isOrganizerPlaying()) {
-			gameSession.getPlayers().add(gameSession.getOrganizer());
-		}
 		return repository.save(gameSession);
 	}
 
@@ -43,10 +41,10 @@ public class GameSessionServiceImpl implements GameSessionService {
 	}
 
 	@Override
-	public List<GameSession> findAllGameSessionsByPlayer(final String username) {
+	public List<GameSession> findAllGameSessionsByPlayer(final Player player) {
 		return findAllGameSessions()
 			.stream()
-			.filter(s -> s.getPlayers().contains(username))
+			.filter(s -> s.getPlayers().contains(player))
 			.sorted(Comparator.comparing(GameSession::getDate))
 			.toList();
 	}
@@ -76,9 +74,17 @@ public class GameSessionServiceImpl implements GameSessionService {
 
 	@Override
 	public GameSession findGameSessionByDateAndOrganizer(LocalDateTime date, String organizer) {
-		Optional<GameSession> opt = findAllGameSessions().stream()
-			.filter(s -> date.equals(s.getDate()) && organizer.equals(s.getOrganizer().getUsername()))
-			.findFirst();
+		Optional<GameSession> opt;
+		if (organizer.startsWith("@")) {
+			opt = findAllGameSessions().stream()
+				.filter(s -> date.equals(s.getDate()) && organizer.substring(1).equals(s.getOrganizer().getUsername()))
+				.findFirst();
+		} else {
+			String[] array = organizer.split(" ");
+			opt = findAllGameSessions().stream()
+				.filter(s -> date.equals(s.getDate()) && array[0].equals(s.getOrganizer().getFirstName()))
+				.findFirst();
+		}
 		return opt.orElse(null);
 	}
 

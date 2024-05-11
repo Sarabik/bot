@@ -36,19 +36,9 @@ public class TextFinals {
 
 	public final static String GAME_NAME = "<b>Название игры или нескольких игр:</b>";
 
-	public final static String ORGANIZER_PLAYING = "<b>Будете ли вы сами играть?</b>";
+	public final static String FREE_PLAYER_SLOTS = "<b>Количество свободных мест для записи на встречу:</b>";
 
-	public final static String I_WILL_PLAY = "Да, тоже буду играть";
-
-	public final static String I_WILL_NOT_PLAY = "Нет, хочу провести игру для других";
-
-	public static final String PLAYING = "Вы участвуете в игре сами";
-
-	public static final String NOT_PLAYING = "Вы не участвуете в игре, а только ее проводите";
-
-	public final static String MAX_PLAYER_COUNT = "<b>Максимальное количество игроков (включая вас, если играете):</b>";
-
-	public final static String CHOSE_MAX_PLAYER_COUNT = "Выберите максимальное количество игроков";
+	public final static String CHOSE_FREE_PLAYER_SLOTS = "Укажите количество свободных мест для записи";
 
 	public final static String WRITE_COMMENT = "<b>Если хотите, напишите комментарий или дополнительную информацию:</b>";
 

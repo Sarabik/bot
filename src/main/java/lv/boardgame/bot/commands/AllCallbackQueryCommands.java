@@ -7,8 +7,7 @@ import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionLeavedCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.JoinedGameSessionCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingCommentCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingDateCallback;
-import lv.boardgame.bot.commands.callbackQueryCommand.WaitingIfOrganizerPlayingCallback;
-import lv.boardgame.bot.commands.callbackQueryCommand.WaitingMaxPlayerCountCallback;
+import lv.boardgame.bot.commands.callbackQueryCommand.WaitingFreePlayerSlotsCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingTimeCallback;
 import lv.boardgame.bot.model.BotState;
 import org.springframework.stereotype.Component;
@@ -27,8 +26,7 @@ public class AllCallbackQueryCommands {
 		final GameSessionDeletedCallback gameSessionDeletedCallback,
 		final WaitingDateCallback waitingDateCallback,
 		final WaitingTimeCallback waitingTimeCallback,
-		final WaitingIfOrganizerPlayingCallback waitingIfOrganizerPlayingCallback,
-		final WaitingMaxPlayerCountCallback waitingMaxPlayerCountCallback,
+		final WaitingFreePlayerSlotsCallback waitingFreePlayerSlotsCallback,
 		final WaitingCommentCallback waitingCommentCallback,
 		final JoinedGameSessionCallback joinedGameSessionCallback,
 		final GameSessionLeavedCallback gameSessionLeavedCallback
@@ -37,8 +35,7 @@ public class AllCallbackQueryCommands {
 		commands.put(SESSION_DELETED, gameSessionDeletedCallback);
 		commands.put(BotState.WAITING_DATE.toString(), waitingDateCallback);
 		commands.put(BotState.WAITING_TIME.toString(), waitingTimeCallback);
-		commands.put(BotState.WAITING_IF_ORGANIZER_PLAYING.toString(), waitingIfOrganizerPlayingCallback);
-		commands.put(BotState.WAITING_MAX_PLAYER_COUNT.toString(), waitingMaxPlayerCountCallback);
+		commands.put(BotState.WAITING_FREE_PLAYER_SLOTS.toString(), waitingFreePlayerSlotsCallback);
 		commands.put(BotState.WAITING_COMMENT.toString(), waitingCommentCallback);
 		commands.put(JOINED_SESSION, joinedGameSessionCallback);
 		commands.put(SESSION_LEAVED, gameSessionLeavedCallback);

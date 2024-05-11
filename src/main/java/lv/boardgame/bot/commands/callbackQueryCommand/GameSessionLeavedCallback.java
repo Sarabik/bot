@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import static lv.boardgame.bot.TextFinals.PLAYER_JOINED_YOUR_GAME_SESSION;
 import static lv.boardgame.bot.TextFinals.PLAYER_LEAVED_YOUR_GAME_SESSION;
 import static lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil.getGameSession;
 import static lv.boardgame.bot.commands.callbackQueryCommand.CallbackQueryUtil.getStartList;

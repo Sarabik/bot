@@ -1,6 +1,7 @@
 package lv.boardgame.bot.service;
 
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Player;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public interface GameSessionService {
 
 	void deleteGameSessionById(ObjectId id);
 
-	List<GameSession> findAllGameSessionsByPlayer(final String username);
+	List<GameSession> findAllGameSessionsByPlayer(final Player player);
 
 	List<GameSession> findAllGameSessions();
 

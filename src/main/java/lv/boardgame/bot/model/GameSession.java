@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document(collection = "game_session")
+@Document(collection = "game_session_v2")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +21,10 @@ public class GameSession {
 	@Id
 	private ObjectId id;
 	private Player organizer;
-	private boolean isOrganizerPlaying;
 	private LocalDateTime date;
 	private String place;
 	private String gameName;
-	private int maxPlayerCount;
+	private int freePlayerSlots;
 	private Set<Player> players = new HashSet<>();
 	private String comment;
 }

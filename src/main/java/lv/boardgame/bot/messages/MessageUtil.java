@@ -84,7 +84,7 @@ public class MessageUtil {
 			}
 			joiner.add("<b>Играют:  </b><i>" + nameJoiner + "</i>");
 		}
-		joiner.add("<b>Свободных мест:  </b><i>" + (gmSession.getMaxPlayerCount() - gmSession.getPlayers().size()) + "</i>");
+		joiner.add("<b>Свободных мест:  </b><i>" + (gmSession.getFreePlayerSlots() - gmSession.getPlayers().size()) + "</i>");
 		return joiner.toString();
 	}
 
