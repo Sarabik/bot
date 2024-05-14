@@ -1,8 +1,10 @@
 package lv.boardgame.bot.messages;
 
+import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.model.Player;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
@@ -13,6 +15,8 @@ import java.util.StringJoiner;
 import static lv.boardgame.bot.TextFinals.DATE_TIME_FORMATTER;
 
 public class MessageUtil {
+
+	private static final Logger LOG = LoggerFactory.getLogger(GameSessionDeletedCallback.class);
 
 	private static List<String> getGroupList(String groupIds) {
 		String[] array = groupIds.split(" ");
@@ -33,6 +37,7 @@ public class MessageUtil {
 		List<SendMessage> list = new ArrayList<>();
 		for (String groupId : getGroupList(groupIds)) {
 			list.add(getMessageForGroup(str, groupId, botUsername));
+			LOG.info("Prepared message to group with id: {}", groupId);
 		}
 		return list;
 	}

@@ -59,6 +59,7 @@ public class WaitingComment implements MessageCommand {
 		String str = GAME_SESSION_CREATED + System.lineSeparator() + convertGameSessionToString(gmSession);
 		list.add(getCustomMessage(chatIdString, str));
 		list.addAll(getGroupSendMessages(str, groupIds, botUsername));
+		LOG.info("All messages prepared for groups: {}", groupIds);
 		return list;
 	}
 }
