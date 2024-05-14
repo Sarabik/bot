@@ -61,10 +61,13 @@ public class GameSessionServiceImpl implements GameSessionService {
 
 	@Override
 	public void deleteOutdatedGameSessions() {
+		LOG.info("Ready to delete outdated sessions");
 		List<GameSession> list = findAllGameSessions();
 		LocalDateTime date = LocalDateTime.now();
 		date = date.minusHours(1);
+		LOG.info("If session date was before {}, delete it", date);
 		for (GameSession gs : list) {
+			LOG.info("Game session with game name {} - time: {}", gs.getGameName(), gs.getDate());
 			if (gs.getDate().isBefore(date)) {
 				repository.deleteById(gs.getId());
 				LOG.info("Deleted outdated game session: {}", gs);
