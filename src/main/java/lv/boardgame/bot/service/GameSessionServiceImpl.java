@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class GameSessionServiceImpl implements GameSessionService {
 	public void deleteOutdatedGameSessions() {
 		LOG.info("Ready to delete outdated sessions");
 		List<GameSession> list = findAllGameSessions();
-		LocalDateTime date = LocalDateTime.now();
+		LocalDateTime date = LocalDateTime.now(ZoneId.of("UTC+3"));
 		date = date.minusHours(1);
 		LOG.info("If session date was before {}, delete it", date);
 		for (GameSession gs : list) {
