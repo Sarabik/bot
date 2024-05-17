@@ -18,7 +18,7 @@ public class FreePlayerSlotsInlineKeyboardMarkup extends InlineKeyboardMarkup {
 		List<List<InlineKeyboardButton>> listOfLists = new ArrayList<>();
 		List<InlineKeyboardButton> list1 = new ArrayList<>();
 		List<InlineKeyboardButton> list2 = new ArrayList<>();
-		for (int i = 2; i <= 5; i++) {
+		for (int i = 1; i <= 5; i++) {
 			String str = String.valueOf(i);
 			list1.add(InlineKeyboardButton.builder()
 				.text(str)
