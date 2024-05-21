@@ -82,7 +82,7 @@ public class BoardGameBot extends TelegramLongPollingBot {
 			CallbackQuery callbackQuery = update.getCallbackQuery();
 			String data = callbackQuery.getData();
 			int messageId = callbackQuery.getMessage().getMessageId();
-			Message callbackQueryMessage = callbackQuery.getMessage();
+			Message callbackQueryMessage = (Message) callbackQuery.getMessage();
 			long chatId = callbackQuery.getMessage().getChatId();
 			String chatIdString = String.valueOf(chatId);
 			Player player = getPlayer(chatIdString, callbackQuery.getFrom());

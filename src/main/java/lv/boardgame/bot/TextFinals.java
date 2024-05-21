@@ -106,6 +106,10 @@ public class TextFinals {
 	public final static String NO_ADMINS = "В списке нет админов";
 	public final static String ADMIN_ADDED = "Добавлен админ: ";
 
+	public final static String ERROR = "Ошибка!";
+	public final static String GROUP_ADDED = "Добавлена группа: ";
+	public final static String ADD_GROUP = "add_group";
+
 	/*AdminCommands*/
 	public final static String ADMIN_DELETE_SESSION = "delete_session";
 }

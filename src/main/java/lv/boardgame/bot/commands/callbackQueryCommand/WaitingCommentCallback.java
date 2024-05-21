@@ -4,6 +4,7 @@ import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.mybot.GameSessionConstructor;
 import lv.boardgame.bot.service.GameSessionService;
+import lv.boardgame.bot.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,17 +26,20 @@ public class WaitingCommentCallback implements CallbackQueryCommand {
 	@Value("${telegram.bot.username}")
 	private String botUsername;
 
-	@Value("${telegram.groupIds}")
-	private String groupIds;
+	/*@Value("${telegram.groupIds}")
+	private String groupIds;*/
+
+	private final GroupService groupService;
 
 	private final GameSessionService gameSessionService;
 
 	private final GameSessionConstructor gameSessionConstructor;
 
 	private WaitingCommentCallback(
-		final GameSessionService gameSessionService,
+		final GroupService groupService, final GameSessionService gameSessionService,
 		final GameSessionConstructor gameSessionConstructor
 	) {
+		this.groupService = groupService;
 		this.gameSessionService = gameSessionService;
 		this.gameSessionConstructor = gameSessionConstructor;
 	}
@@ -54,7 +58,7 @@ public class WaitingCommentCallback implements CallbackQueryCommand {
 		LOG.info("{} -> Game session saved: {}", player, gmSession);
 		String str = GAME_SESSION_CREATED + System.lineSeparator() + convertGameSessionToString(gmSession);
 		List<SendMessage> list = getStartList(chatIdString, str);
-		list.addAll(getGroupSendMessages(str, groupIds, botUsername));
+		list.addAll(getGroupSendMessages(str, groupService.findAllGroups(), botUsername));
 		return list;
 	}
 }

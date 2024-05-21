@@ -2,6 +2,7 @@ package lv.boardgame.bot.messages;
 
 import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
+import lv.boardgame.bot.model.Group;
 import lv.boardgame.bot.model.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,15 @@ public class MessageUtil {
 			botPrivateChatUrl);
 	}
 
-	public static List<SendMessage> getGroupSendMessages(String str, String groupIds, String botUsername) {
+	public static List<SendMessage> getGroupSendMessages(String str, List<Group> groupList, String botUsername) {
 		List<SendMessage> list = new ArrayList<>();
-		for (String groupId : getGroupList(groupIds)) {
-			list.add(getMessageForGroup(str, groupId, botUsername));
-			LOG.info("Prepared message to group with id: {}", groupId);
+		for (Group group : groupList) {
+			SendMessage message = getMessageForGroup(str, group.getId(), botUsername);
+			if (group.getThreadId() != null) {
+				message.setMessageThreadId(group.getThreadId());
+			}
+			list.add(message);
+			LOG.info("Prepared message to group with name: {}", group.getName());
 		}
 		return list;
 	}
