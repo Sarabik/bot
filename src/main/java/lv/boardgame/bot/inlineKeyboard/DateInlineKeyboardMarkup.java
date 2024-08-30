@@ -1,5 +1,6 @@
 package lv.boardgame.bot.inlineKeyboard;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -12,6 +13,7 @@ import static lv.boardgame.bot.TextFinals.CHOSE_DATE;
 import static lv.boardgame.bot.TextFinals.DATE_FORMATTER;
 
 @Component
+@Scope("prototype")
 public class DateInlineKeyboardMarkup extends InlineKeyboardMarkup {
 
 	public DateInlineKeyboardMarkup() {
