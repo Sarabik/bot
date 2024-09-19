@@ -10,6 +10,7 @@ import lv.boardgame.bot.commands.callbackQueryCommand.WaitingDateCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingFreePlayerSlotsCallback;
 import lv.boardgame.bot.commands.callbackQueryCommand.WaitingTimeCallback;
 import lv.boardgame.bot.model.BotState;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.Map;
 import static lv.boardgame.bot.TextFinals.*;
 
 @Component
+@Scope("prototype")
 public class AllCallbackQueryCommands {
 
 	private final Map<String, CallbackQueryCommand> commands;
