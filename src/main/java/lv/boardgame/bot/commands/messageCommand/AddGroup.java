@@ -26,6 +26,7 @@ public class AddGroup implements MessageCommand {
 		this.groupService = groupService;
 	}
 
+	//Example: add_group -111111111 name_of_group
 	@Override
 	public List<SendMessage> execute(final String chatId, final Player player, final String receivedText) {
 		if (!superAdmin.equals(player.getUsername())) {

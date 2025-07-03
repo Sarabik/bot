@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document(collection = "game_session_v2")
+@Document(collection = "game_session_test")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
