@@ -1,0 +1,10 @@
+package lv.boardgame.bot.updateHandling.updateMessageHandler.messageCommandHadlers;
+
+import lv.boardgame.bot.model.Player;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
+import java.util.List;
+
+public interface MessageCommand {
+	List<SendMessage> execute(String chatId, Player player, String receivedText);
+}

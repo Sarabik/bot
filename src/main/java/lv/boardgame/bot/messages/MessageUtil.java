@@ -1,9 +1,9 @@
 package lv.boardgame.bot.messages;
 
-import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.model.Group;
 import lv.boardgame.bot.model.Player;
+import lv.boardgame.bot.updateHandling.updateCallbackHandler.callbackCommandHandlers.directDataCallbackCommandHandlers.commands.GameSessionDeletedCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-import static lv.boardgame.bot.TextFinals.DATE_TIME_FORMATTER;
+import static lv.boardgame.bot.constants.TextFinals.DATE_TIME_FORMATTER;
 
 public class MessageUtil {
 

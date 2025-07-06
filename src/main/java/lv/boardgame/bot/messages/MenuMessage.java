@@ -1,11 +1,11 @@
 package lv.boardgame.bot.messages;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.mybot.MenuReplyKeyboard;
+import lv.boardgame.bot.keyboards.MenuReplyKeyboard;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import static lv.boardgame.bot.messages.MessageUtil.*;
-import static lv.boardgame.bot.TextFinals.*;
+import static lv.boardgame.bot.constants.TextFinals.*;
 
 @Component
 @AllArgsConstructor

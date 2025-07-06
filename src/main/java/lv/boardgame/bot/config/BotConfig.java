@@ -1,6 +1,6 @@
 package lv.boardgame.bot.config;
 
-import lv.boardgame.bot.mybot.BoardGameBot;
+import lv.boardgame.bot.BoardGameBot;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.TelegramBotsApi;

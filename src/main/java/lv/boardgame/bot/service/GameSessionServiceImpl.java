@@ -1,10 +1,10 @@
 package lv.boardgame.bot.service;
 
 import lombok.AllArgsConstructor;
-import lv.boardgame.bot.commands.callbackQueryCommand.GameSessionDeletedCallback;
 import lv.boardgame.bot.model.GameSession;
 import lv.boardgame.bot.model.Player;
 import lv.boardgame.bot.repository.GameSessionRepository;
+import lv.boardgame.bot.updateHandling.updateCallbackHandler.callbackCommandHandlers.directDataCallbackCommandHandlers.commands.GameSessionDeletedCallback;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
